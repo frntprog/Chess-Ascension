@@ -7,6 +7,7 @@
 
 import { ChessBoard } from "@/components/Board/ChessBoard"
 import { ScoreDisplay } from "@/components/Board/ScoreDisplay"
+import { ComboDisplay } from "@/components/Board/ComboDisplay"
 
 export function Play() {
   return (
@@ -18,9 +19,10 @@ export function Play() {
             <ChessBoard />
           </div>
           
-          {/* Score Display - Positioned to the side on large screens, below on small screens */}
-          <div className="flex justify-center lg:justify-start">
+          {/* Score Display and Combo Display - Positioned to the side on large screens, below on small screens */}
+          <div className="flex flex-col justify-center lg:justify-start gap-4">
             <ScoreDisplay />
+            <ComboDisplay />
           </div>
         </div>
       </div>

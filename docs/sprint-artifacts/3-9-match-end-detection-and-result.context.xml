@@ -1,0 +1,172 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>9</storyId>
+    <title>Match End Detection and Result</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-9-match-end-detection-and-result.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want to see the match result when the game ends</iWant>
+    <soThat>so that I know if I won, lost, or drew</soThat>
+    <tasks>
+      <task id="1" ac="2">Create Match Result Modal Component</task>
+      <task id="2" ac="1">Integrate Match End Detection in ChessBoard Component</task>
+      <task id="3" ac="3,4">Add Session Reset Actions</task>
+      <task id="4" ac="2,3,4">Integrate Match Result Modal in Play Page</task>
+      <task id="5" ac="2">Determine Match Result Logic</task>
+      <task id="6" ac="All">Testing and Verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>Given a chess game reaches an end condition</given>
+      <when>When checkmate, stalemate, or draw occurs</when>
+      <then>Then the match end is detected:
+        - chess.js detects game end: `chess.isCheckmate()`, `chess.isStalemate()`, `chess.isDraw()`
+        - Game status is updated in session store: `setGameStatus('checkmate' | 'stalemate' | 'draw')`
+        - Match result modal is triggered when game end is detected</then>
+    </criterion>
+    <criterion id="AC2">
+      <given>And when match end is detected</given>
+      <when>When match end is detected</when>
+      <then>Then:
+        - Match result modal is displayed (shadcn/ui Dialog)
+        - Modal shows:
+          - Result: "You Win!" / "You Lose!" / "Draw"
+          - Final score (from session store)
+          - XP gained: `floor(score / 10)`
+          - "Play Again" button (primary)
+          - "Home" button (secondary)
+        - Modal is centered, max-width 600px (UX Design Specification section 7.3 - Modal Patterns)
+        - Modal cannot be dismissed by clicking outside (user must choose action)</then>
+    </criterion>
+    <criterion id="AC3">
+      <given>And when user clicks "Play Again"</given>
+      <when>When user clicks "Play Again"</when>
+      <then>Then:
+        - Navigate back to mode/difficulty selection (`/mode-selection`)
+        - Session store is reset: `resetSessionScore()`, `resetTurnNumber()`, `resetCaptureHistory()`, `setBoardState(STARTING_FEN)`, `setGameStatus('normal')`, `setSessionLifecycle('idle')`
+        - Match result modal is closed</then>
+    </criterion>
+    <criterion id="AC4">
+      <given>And when user clicks "Home"</given>
+      <when>When user clicks "Home"</when>
+      <then>Then:
+        - Navigate to landing page (`/`)
+        - Session store is reset (same as AC3)
+        - Match result modal is closed</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="5.1 Core Features">
+        <snippet>Match result display (Win/Loss/Draw, score, XP gained) is a core feature. XP conversion: `XP = floor(score / 10)`. All gameplay runs client-side in session state (Zustand).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="3 - Session Layer">
+        <snippet>Session Layer (Zustand) manages boardState, sessionScore, gameStatus, sessionLifecycle. Match end detection: Check `gameStatus` after each move. Session reset when match ends.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="4 - Data Flow Summary">
+        <snippet>Match End: Session store calculates XP = floor(score / 10). Session store resets to default after match end. Profile store updates localStorage with XP, level, rank, stats.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="3 - Game Engine Layer">
+        <snippet>Game Engine Layer: chess.js controls legal moves, game state, checkmate logic. Match end detection: Use `chess.isCheckmate()`, `chess.isStalemate()`, `chess.isDraw()` from chess.js.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="7.3 - Modal Patterns">
+        <snippet>Modal size variants: Medium (max-width 600px) for match results, forms (default). Dismiss behavior: Click outside closes modal (for non-critical modals), ESC key always closes modal. Focus management: Auto-focus first input or primary button on open.</snippet>
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 3: Classic Mode Chess Gameplay - Story 3.9">
+        <snippet>Match end detection: Check `chess.isCheckmate()`, `chess.isStalemate()`, `chess.isDraw()`. Match result modal: Use shadcn/ui Dialog component. Modal layout: Centered, max-width 600px. Session reset: Reset `sessionScore`, `boardState`, `sessionLifecycle` in session store.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore" lines="1-206">
+        <reason>Session store provides gameStatus, sessionScore, currentTurn, and actions for resetting session state. Contains setGameStatus, resetSessionScore, resetTurnNumber, resetCaptureHistory, setBoardState, setSessionLifecycle actions needed for match end detection and session reset.</reason>
+      </artifact>
+      <artifact path="src/components/Board/ChessBoard.tsx" kind="component" symbol="ChessBoard" lines="212-226,292-306">
+        <reason>ChessBoard component already implements match end detection - sets gameStatus in session store after each move (checkmate, stalemate, draw). This story needs to watch gameStatus changes and trigger modal display.</reason>
+      </artifact>
+      <artifact path="src/core/chess/engine.ts" kind="service" symbol="ChessEngine" lines="86-111,133-151">
+        <reason>ChessEngine provides isCheckmate(), isStalemate(), isDraw() methods that return match end conditions. MoveResult interface includes isCheckmate, isStalemate, isDraw flags already used in ChessBoard.</reason>
+      </artifact>
+      <artifact path="src/components/UI/dialog.tsx" kind="component" symbol="Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter" lines="1-119">
+        <reason>shadcn/ui Dialog components available for match result modal. Includes Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter exports ready to use.</reason>
+      </artifact>
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" lines="1-57">
+        <reason>shadcn/ui Button component available for "Play Again" (primary) and "Home" (secondary) buttons in modal.</reason>
+      </artifact>
+      <artifact path="src/pages/Play.tsx" kind="page" symbol="Play" lines="1-32">
+        <reason>Play page component where MatchResultModal will be integrated. Currently displays ChessBoard, ScoreDisplay, and ComboDisplay. Needs to add MatchResultModal and watch gameStatus changes.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="chess.js" version="^1.4.0" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="lucide-react" version="^0.554.0" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Session Layer: Match end detection uses gameStatus field in session store. Session reset must reset all session state when match ends. Session store never writes to localStorage directly (Architecture section 3 - Session Layer).</constraint>
+    <constraint>Game Engine Layer: Match end detection uses chess.isCheckmate(), chess.isStalemate(), chess.isDraw() from chess.js. ChessEngine integration already provides moveResult.isCheckmate, moveResult.isStalemate, moveResult.isDraw from Story 3.5, 3.6. No direct persistence: Game engine layer does not write to localStorage.</constraint>
+    <constraint>UI Layer: Match result modal uses shadcn/ui Dialog component. Modal patterns: Centered, max-width 600px (UX Design Specification section 7.3 - Modal Patterns). Navigation uses React Router useNavigate for navigation. Modal cannot be dismissed by clicking outside (user must choose action).</constraint>
+    <constraint>Component Integration: Match end detection already implemented in ChessBoard component (lines 212-226, 292-306) - sets gameStatus in session store. Modal trigger: Watch gameStatus changes in Play page, show modal when end condition detected. Session reset: Call resetSession() action from session store before navigation.</constraint>
+    <constraint>File Structure: New files: /src/components/Board/MatchResultModal.tsx (match result modal component). Modified files: /src/stores/sessionStore.ts (add resetSession action). Modified files: /src/pages/Play.tsx (add MatchResultModal integration and navigation handlers).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="SessionStore" kind="Zustand store interface" signature="useSessionStore(): SessionState" path="src/stores/sessionStore.ts">
+      <field>gameStatus: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw'</field>
+      <field>sessionScore: number</field>
+      <field>currentTurn: 'white' | 'black'</field>
+      <action>setGameStatus(status: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw'): void</action>
+      <action>resetSessionScore(): void</action>
+      <action>resetTurnNumber(): void</action>
+      <action>resetCaptureHistory(): void</action>
+      <action>setBoardState(fen: string): void</action>
+      <action>setSessionLifecycle(lifecycle: 'idle' | 'active' | 'ended'): void</action>
+      <action>setCurrentCombo(combo: { streak: number; bonus: number } | null): void</action>
+    </interface>
+    <interface name="ChessEngine" kind="Class interface" signature="class ChessEngine" path="src/core/chess/engine.ts">
+      <method>isCheckmate(): boolean</method>
+      <method>isStalemate(): boolean</method>
+      <method>isDraw(): boolean</method>
+      <method>getFEN(): string</method>
+      <method>getTurn(): 'w' | 'b'</method>
+    </interface>
+    <interface name="MatchResultModal Props" kind="React component props" signature="MatchResultModal({ isOpen, onClose, onPlayAgain, onHome })" path="src/components/Board/MatchResultModal.tsx">
+      <prop>isOpen: boolean</prop>
+      <prop>onClose: () => void</prop>
+      <prop>onPlayAgain: () => void</prop>
+      <prop>onHome: () => void</prop>
+    </interface>
+    <interface name="React Router Navigation" kind="React hook" signature="useNavigate(): NavigateFunction" path="react-router-dom">
+      <method>navigate(path: string): void</method>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Testing uses manual verification and component integration testing. No automated test framework configured. Test by running dev server and verifying behavior in browser. Check console for errors. Verify modal display, navigation, and session reset functionality.</standards>
+    <locations>No dedicated test directory. Manual testing in browser during development.</locations>
+    <ideas>
+      <test ac="AC1">Test checkmate detection: User checkmates AI → "You Win!" modal shown. Test checkmate detection: AI checkmates user → "You Lose!" modal shown. Test stalemate detection: Stalemate occurs → "Draw" modal shown. Test draw detection: Draw occurs → "Draw" modal shown.</test>
+      <test ac="AC2">Test modal display: Shows final score and XP gained correctly. Test modal cannot be dismissed by clicking outside. Verify modal is centered, max-width 600px. Verify result message displays correctly based on gameStatus and currentTurn.</test>
+      <test ac="AC3">Test "Play Again" button: Navigates to /mode-selection, session reset. Verify all session state reset after navigation (sessionScore, turnNumber, captureHistory, boardState, gameStatus, sessionLifecycle, currentCombo).</test>
+      <test ac="AC4">Test "Home" button: Navigates to /, session reset. Verify all session state reset after navigation (same as AC3).</test>
+      <test ac="All">Test session reset: All session state reset after navigation. Verify no console errors or warnings. Verify modal closes after navigation action.</test>
+    </ideas>
+  </tests>
+</story-context>
+

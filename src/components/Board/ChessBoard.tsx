@@ -37,7 +37,14 @@ export function ChessBoard() {
     setCurrentTurn,
     difficulty,
     incrementSessionScore,
-    resetSessionScore
+    resetSessionScore,
+    incrementTurnNumber,
+    resetTurnNumber,
+    addCaptureToHistory,
+    resetCaptureHistory,
+    checkComboStreak,
+    calculateComboBonus,
+    setCurrentCombo
   } = useSessionStore();
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
   const [availableMoves, setAvailableMoves] = useState<string[]>([]);
@@ -60,8 +67,10 @@ export function ChessBoard() {
     if (boardState && boardState !== STARTING_FEN) {
       chessEngineRef.current.loadFEN(boardState);
     } else if (!boardState || boardState === STARTING_FEN) {
-      // New match starting - reset score and initialize session store with starting position
+      // New match starting - reset score, combo tracking, and initialize session store with starting position
       resetSessionScore();
+      resetTurnNumber();
+      resetCaptureHistory();
       setBoardState(STARTING_FEN);
     }
 
@@ -162,6 +171,9 @@ export function ChessBoard() {
       return false;
     }
 
+    // Increment turn number for user move
+    incrementTurnNumber();
+    
     // Check if piece was captured (user captures add to score)
     if (moveResult.move?.captured) {
       const capturedPiece = moveResult.move.captured;
@@ -169,6 +181,26 @@ export function ChessBoard() {
       if (points > 0) {
         incrementSessionScore(points);
       }
+      
+      // Add capture to history for combo tracking
+      addCaptureToHistory(capturedPiece);
+      
+      // Check for combo streak and calculate bonus
+      const streak = checkComboStreak();
+      if (streak > 0) {
+        const bonus = calculateComboBonus();
+        if (bonus > 0) {
+          incrementSessionScore(bonus);
+          setCurrentCombo({ streak, bonus });
+        }
+      } else {
+        // No combo - clear current combo display
+        setCurrentCombo(null);
+      }
+    } else {
+      // No capture - reset combo tracking
+      resetCaptureHistory();
+      setCurrentCombo(null);
     }
 
     // Update session store with new FEN after animation frame

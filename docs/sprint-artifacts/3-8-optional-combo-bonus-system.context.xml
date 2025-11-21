@@ -1,0 +1,199 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>8</storyId>
+    <title>Optional Combo Bonus System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-8-optional-combo-bonus-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user,</asA>
+    <iWant>I want bonus points for consecutive captures,</iWant>
+    <soThat>so that I'm rewarded for aggressive play.</soThat>
+    <tasks>
+- [ ] **Task 1: Create Combo Tracking System in Session Store** (AC: 2)
+  - [ ] Open `/src/stores/sessionStore.ts`
+  - [ ] Add `captureHistory: Array<{ turn: number; piece: string; timestamp: number }>` field to session store state
+  - [ ] Add action: `addCaptureToHistory(piece: string): void` - Add capture to history with turn number
+  - [ ] Add action: `resetCaptureHistory(): void` - Clear capture history
+  - [ ] Add action: `checkComboStreak(): number` - Returns combo streak count (2 or 3)
+  - [ ] Add action: `calculateComboBonus(): number` - Returns bonus points based on streak (2 captures: +10, 3 captures: +20)
+  - [ ] Add feature flag: `comboBonusesEnabled: boolean` (default: true) - Allow disabling combo bonuses
+
+- [ ] **Task 2: Integrate Combo Detection in ChessBoard Component** (AC: 1, 2)
+  - [ ] Open `/src/components/Board/ChessBoard.tsx`
+  - [ ] Import combo tracking actions from session store: `addCaptureToHistory`, `checkComboStreak`, `calculateComboBonus`, `incrementSessionScore`
+  - [ ] After user makes valid move and capture is detected:
+    - Call `addCaptureToHistory(capturedPiece)` to record capture
+    - Call `checkComboStreak()` to check if combo exists (returns 2 or 3)
+    - If combo exists: Call `calculateComboBonus()` to get bonus points
+    - If bonus > 0: Call `incrementSessionScore(bonus)` to add bonus to score
+    - Store combo info for display: `currentCombo: { streak: number, bonus: number }`
+  - [ ] Reset combo tracking: If user makes move without capture, reset capture history (call `resetCaptureHistory()`)
+  - [ ] Track turn numbers: Increment turn counter for each user move
+
+- [ ] **Task 3: Create Combo Display Component** (AC: 3)
+  - [ ] Create `/src/components/Board/ComboDisplay.tsx` file
+  - [ ] Import session store: `useSessionStore` to read combo state
+  - [ ] Display combo streak: "2x Combo" or "3x Combo" badge
+  - [ ] Display combo bonus: "+10" or "+20" badge when combo triggers
+  - [ ] Visual feedback: Animate combo badge when combo triggers (scale up, fade in)
+  - [ ] Hide combo display when no active combo
+  - [ ] Use shadcn/ui Badge component for styling
+  - [ ] Style with accent color (#f59e0b) for combo badges
+
+- [ ] **Task 4: Integrate Combo Display in Game Board Page** (AC: 3)
+  - [ ] Open `/src/pages/Play.tsx`
+  - [ ] Import `ComboDisplay` component: `import ComboDisplay from '@/components/Board/ComboDisplay'`
+  - [ ] Add ComboDisplay component to layout:
+    - Position: Near score display or above board
+    - Layout: Centered or aligned with score display
+  - [ ] Ensure combo display updates in real-time (reactive to session store changes)
+
+- [ ] **Task 5: Reset Combo Tracking on Match Start** (AC: 2)
+  - [ ] Identify match start trigger (when user selects mode/difficulty and starts match)
+  - [ ] Call `resetCaptureHistory()` action when match starts
+  - [ ] Verify combo tracking resets to empty at start of each new match
+  - [ ] Ensure combo tracking persists during match (not reset during match)
+
+- [ ] **Task 6: Add Combo Reset Logic** (AC: 2)
+  - [ ] In ChessBoard component, after user makes move:
+    - Check if move resulted in capture
+    - If no capture: Call `resetCaptureHistory()` to reset combo streak
+    - If capture: Add to history and check for combo
+  - [ ] Ensure combo resets correctly when user goes 1 turn without capture
+
+- [ ] **Task 7: Add Feature Flag Support** (AC: 2)
+  - [ ] Add `comboBonusesEnabled` flag to session store (default: true)
+  - [ ] In combo detection logic, check flag before calculating/adding bonus
+  - [ ] If flag is false: Skip combo bonus calculation and display
+  - [ ] Allow toggling flag (optional: add UI toggle in settings, or keep as code flag for now)
+
+- [ ] **Task 8: Testing and Verification** (AC: All)
+  - [ ] Test combo detection: 2 captures in 2 turns → +10 bonus
+  - [ ] Test combo detection: 3 captures in 3 turns → +20 bonus
+  - [ ] Test combo reset: 1 turn without capture → combo resets
+  - [ ] Test combo display: Shows "2x Combo" and "+10" badge when combo triggers
+  - [ ] Test combo display: Shows "3x Combo" and "+20" badge when combo triggers
+  - [ ] Test combo tracking resets on match start
+  - [ ] Test combo tracking persists during match (not reset during match)
+  - [ ] Test feature flag: When disabled, no combo bonuses awarded
+  - [ ] Test visual feedback: Combo badge animates when combo triggers
+  - [ ] Verify no console errors or warnings
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**AC1: Combo Bonus Calculation**
+Given a user captures pieces in consecutive turns
+When capture streaks occur
+Then combo bonuses are awarded:
+- 2 captures in 2 turns: +10 bonus
+- 3 captures in 3 turns: +20 bonus
+- Combo bonus is added to session score
+- Combo indicator shown (visual feedback: "Combo! +10" badge)
+
+**AC2: Combo Tracking System**
+And combo tracking:
+- Tracks last 3 turns for capture detection
+- Resets if user goes 1 turn without capture
+- Combo bonus is optional (can be disabled via feature flag)
+
+**AC3: Combo Display**
+And combo display:
+- Shows combo streak (e.g., "2x Combo")
+- Visual feedback when combo triggers (badge or animation)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Scoring Rules">
+        <snippet>Optional combo bonuses: 2 captures in 2 turns: +10, 3 captures in 3 turns: +20. All scoring lives only in client-side session state.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Session Layer">
+        <snippet>Session Layer (Zustand) manages temporary game state including score logic. Never writes to persistence directly. Combo tracking should be stored in session store with captureHistory array.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Data Flow Summary">
+        <snippet>During Match: User moves → chess.js validates → UI updates. Score increments based on captured pieces. Combo detection should occur after piece capture detected.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="File & Folder Structure">
+        <snippet>Combo display component: `/src/components/Board/ComboDisplay.tsx`. Combo tracking: Session store actions in `/src/stores/sessionStore.ts`.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Feedback Patterns">
+        <snippet>Visual feedback: Animation/highlight when combo triggers. Use CSS animations with scale and color transitions for combo display animations.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Journey 2">
+        <snippet>Game Screen: User sees chess board (centered), score display (side), difficulty indicator. Combo display should be positioned near score display or above board.</snippet>
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 3: Classic Mode Chess Gameplay">
+        <snippet>Epic 3 covers Classic Mode gameplay including score tracking, move validation, AI moves, and optional combo bonuses (FR14). Story 3.8 implements combo bonus system.</snippet>
+      </doc>
+      <doc path="docs/sprint-artifacts/3-7-session-score-tracking-system.md" title="Story 3.7 Learnings" section="Dev Agent Record">
+        <snippet>Capture detection pattern: Use `moveResult.move?.captured` from chess.js to detect captured pieces. Score update pattern: Call `incrementSessionScore(points)` action from session store after capture detected. Visual feedback pattern: Use CSS animations (scale + color change) for score update animations.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore" lines="1-110" reason="Session store where combo tracking state and actions will be added. Contains existing score management actions (incrementSessionScore, resetSessionScore) that combo bonus will use." />
+      <file path="src/components/Board/ChessBoard.tsx" kind="component" symbol="ChessBoard" lines="165-172" reason="Component where combo detection logic will be integrated. Already handles capture detection using `moveResult.move?.captured` and calls `incrementSessionScore(points)` after capture." />
+      <file path="src/components/Board/ScoreDisplay.tsx" kind="component" symbol="ScoreDisplay" lines="1-88" reason="Reference component for combo display patterns. Shows visual feedback patterns (animations, scale transitions) that can be reused for combo display." />
+      <file path="src/utils/calculateScore.ts" kind="utility" symbol="calculateScoreForPiece" lines="1-58" reason="Score calculation utility. Combo bonus calculation will follow similar pattern but check capture history instead of single piece." />
+      <file path="src/core/chess/engine.ts" kind="service" symbol="ChessEngine" reason="Chess engine wrapper. Provides `makeMove()` method that returns `moveResult.move?.captured` for capture detection." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="chess.js" version="^1.4.0" />
+        <package name="react-chessboard" version="^5.8.4" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Session Layer: Combo tracking must be stored in session store (Zustand), NOT persisted to localStorage. Combo tracking is session-only and resets on match start.</constraint>
+    <constraint>Capture Detection: Use existing pattern from Story 3.7 - `moveResult.move?.captured` from chess.js provides captured piece type.</constraint>
+    <constraint>Score Update Pattern: Follow Story 3.7 pattern - call `incrementSessionScore(bonus)` action from session store after combo bonus calculated.</constraint>
+    <constraint>Visual Feedback: Use CSS animations with scale and color transitions (similar to ScoreDisplay component) for combo badge animations.</constraint>
+    <constraint>Component Location: Combo display component must be in `/src/components/Board/ComboDisplay.tsx` per Architecture section 8.</constraint>
+    <constraint>UI Components: Use shadcn/ui Badge component for combo display styling, following existing component patterns.</constraint>
+    <constraint>Feature Flag: Combo bonuses must be optional via `comboBonusesEnabled` flag (default: true) in session store.</constraint>
+    <constraint>Combo Reset: Combo tracking resets if user goes 1 turn without capture. Must reset on match start.</constraint>
+    <constraint>Turn Tracking: Must track turn numbers for combo detection (last 3 turns for capture detection).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="SessionStore" kind="Zustand store interface" signature="interface SessionState { captureHistory: Array<{ turn: number; piece: string; timestamp: number }>; comboBonusesEnabled: boolean; addCaptureToHistory: (piece: string) => void; resetCaptureHistory: () => void; checkComboStreak: () => number; calculateComboBonus: () => number; incrementSessionScore: (points: number) => void; }" path="src/stores/sessionStore.ts" />
+    <interface name="ChessEngine.makeMove" kind="method" signature="makeMove(from: string, to: string, promotion?: string): { success: boolean; fen: string; move?: { captured?: string }; }" path="src/core/chess/engine.ts" />
+    <interface name="ComboDisplay" kind="React component" signature="export function ComboDisplay(): JSX.Element" path="src/components/Board/ComboDisplay.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing follows existing patterns from Story 3.7. Manual testing required for combo detection, display, and reset logic. Use browser DevTools console for debugging. No automated test framework currently set up. Test all acceptance criteria manually:
+      - Combo detection (2 captures in 2 turns, 3 captures in 3 turns)
+      - Combo reset (1 turn without capture)
+      - Combo display (badge visibility, animations)
+      - Feature flag (disable combo bonuses)
+      - Match start reset
+    </standards>
+    <locations>
+      Manual testing in browser during development. No test files currently exist. Future test location: `/src/__tests__/` or `/tests/` directory (TBD).
+    </locations>
+    <ideas>
+      <test ac="AC1">Test combo bonus calculation: Make 2 captures in 2 consecutive turns, verify +10 bonus added to score. Make 3 captures in 3 consecutive turns, verify +20 bonus added.</test>
+      <test ac="AC2">Test combo tracking: Verify captureHistory stores last 3 turns. Make move without capture, verify combo resets. Toggle feature flag, verify combo bonuses disabled.</test>
+      <test ac="AC3">Test combo display: Verify "2x Combo" and "+10" badge appears when 2-capture combo triggers. Verify "3x Combo" and "+20" badge appears when 3-capture combo triggers. Verify badge animates on trigger.</test>
+      <test ac="AC2">Test match start reset: Start new match, verify captureHistory is empty. Make captures during match, verify combo tracking persists during match.</test>
+    </ideas>
+  </tests>
+</story-context>
+
