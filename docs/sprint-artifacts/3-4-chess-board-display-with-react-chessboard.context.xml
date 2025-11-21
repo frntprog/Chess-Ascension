@@ -1,0 +1,218 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>4</storyId>
+    <title>Chess Board Display with react-chessboard</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-4-chess-board-display-with-react-chessboard.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want to see a visual chess board</iWant>
+    <soThat>so that I can make moves and see the game state</soThat>
+    <tasks>
+      <task id="1" title="Install react-chessboard Package" ac="1">
+        <subtask>Run `npm install react-chessboard` to install the package</subtask>
+        <subtask>Verify package is added to `package.json` dependencies</subtask>
+        <subtask>Verify TypeScript types are available (package includes types or @types/react-chessboard)</subtask>
+      </task>
+      <task id="2" title="Create ChessBoard Component" ac="1">
+        <subtask>Create `/src/components/Board/ChessBoard.tsx` component file</subtask>
+        <subtask>Import react-chessboard: `import { Chessboard } from 'react-chessboard'`</subtask>
+        <subtask>Import React hooks: `useState`, `useEffect` from React</subtask>
+        <subtask>Import Zustand session store hook: `useSessionStore` from `@/stores/sessionStore`</subtask>
+        <subtask>Set up component structure with TypeScript interface for props (if needed)</subtask>
+        <subtask>Initialize board with standard chess starting position (FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")</subtask>
+        <subtask>Configure board orientation: `boardOrientation="white"` (user plays white, bottom)</subtask>
+        <subtask>Set board width: Appropriate for desktop (e.g., 600px or responsive based on container)</subtask>
+      </task>
+      <task id="3" title="Integrate Board State with Session Store" ac="1">
+        <subtask>Read `boardState` (FEN string) from session store using `useSessionStore` hook</subtask>
+        <subtask>Pass `boardState` to react-chessboard `position` prop</subtask>
+        <subtask>Initialize session store `boardState` with starting FEN if empty</subtask>
+        <subtask>Update session store `boardState` when board position changes (via `onPieceDrop` callback)</subtask>
+        <subtask>Ensure board state syncs correctly with session store</subtask>
+      </task>
+      <task id="4" title="Implement Piece Selection and Move Highlighting" ac="2">
+        <subtask>Implement piece selection state using `useState` to track selected square</subtask>
+        <subtask>Add `onSquareClick` handler to react-chessboard to handle square clicks</subtask>
+        <subtask>When square is clicked: If no piece selected: Select piece if it's user's turn and piece is white</subtask>
+        <subtask>When square is clicked: If piece already selected: Attempt move (will be validated in Story 3.5)</subtask>
+        <subtask>Implement available moves highlighting: Calculate available moves for selected piece (placeholder - full validation in Story 3.5)</subtask>
+        <subtask>Use react-chessboard `customSquareStyles` prop to highlight available move squares</subtask>
+        <subtask>Apply subtle highlight color for available moves (e.g., rgba(245, 158, 11, 0.3) - accent color with opacity)</subtask>
+        <subtask>Implement selected square highlighting: Use `customSquareStyles` to highlight selected square with primary color outline (#1e293b)</subtask>
+        <subtask>Apply border or background color to selected square</subtask>
+      </task>
+      <task id="5" title="Apply Classic Chess Theme Styling" ac="3">
+        <subtask>Configure dark square color: Slate 600 (#475569) using react-chessboard `customDarkSquareStyle` prop</subtask>
+        <subtask>Configure light square color: White or Slate 50 (#f8fafc) using `customLightSquareStyle` prop</subtask>
+        <subtask>Apply highlight colors: Selected square: Accent color (#f59e0b) outline or background tint</subtask>
+        <subtask>Apply highlight colors: Available moves: Subtle accent color highlight (rgba(245, 158, 11, 0.3))</subtask>
+        <subtask>Ensure board styling matches Classic Chess theme from UX Design Specification section 3.1</subtask>
+        <subtask>Test board renders with correct colors on desktop (1280px+ width)</subtask>
+      </task>
+      <task id="6" title="Update Play Page to Display Chess Board" ac="1">
+        <subtask>Open `/src/pages/Play.tsx` file</subtask>
+        <subtask>Import ChessBoard component: `import { ChessBoard } from '@/components/Board/ChessBoard'`</subtask>
+        <subtask>Replace placeholder content with ChessBoard component</subtask>
+        <subtask>Apply centered layout (max-width 1200px, centered) per UX Design Specification section 4.1</subtask>
+        <subtask>Ensure board is centered on page with appropriate spacing</subtask>
+        <subtask>Add responsive container for board (desktop-focused, minimum 1280px width)</subtask>
+      </task>
+      <task id="7" title="Implement Basic Move Handling (Placeholder)" ac="1, 2">
+        <subtask>Add `onPieceDrop` handler to react-chessboard component</subtask>
+        <subtask>Handler receives `sourceSquare` and `targetSquare` parameters</subtask>
+        <subtask>For now, accept all moves (full validation will be implemented in Story 3.5)</subtask>
+        <subtask>Update session store `boardState` with new FEN after move (placeholder - will use chess.js in Story 3.5)</subtask>
+        <subtask>Clear selected square state after move</subtask>
+        <subtask>Note: Full move validation with chess.js will be implemented in Story 3.5</subtask>
+      </task>
+      <task id="8" title="Testing and Verification" ac="All">
+        <subtask>Test chess board displays correctly on desktop (1280px+ width)</subtask>
+        <subtask>Test board renders with standard starting position (all pieces in correct positions)</subtask>
+        <subtask>Test board orientation (user white at bottom, AI black at top)</subtask>
+        <subtask>Test piece selection (clicking white piece highlights square)</subtask>
+        <subtask>Test available moves highlighting (selected piece shows available move squares)</subtask>
+        <subtask>Test board colors match Classic Chess theme (dark squares #475569, light squares white/#f8fafc)</subtask>
+        <subtask>Test selected square highlighting (primary color outline)</subtask>
+        <subtask>Test board is interactive (can click squares)</subtask>
+        <subtask>Test board state syncs with session store (boardState FEN updates)</subtask>
+        <subtask>Verify board is centered on Play page with proper spacing</subtask>
+        <subtask>Test responsive behavior (board scales appropriately for desktop)</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <ac id="1" title="Chess Board Display">
+      <given>A user is on the game board page</given>
+      <when>The page loads</when>
+      <then>
+        <item>Centered chess board using react-chessboard component</item>
+        <item>Board size: Appropriate for desktop (minimum 1280px width)</item>
+        <item>Square colors: Classic Chess theme (dark/light squares matching theme)</item>
+        <item>Pieces: Standard chess pieces rendered correctly</item>
+        <item>Board orientation: User plays white (bottom), AI plays black (top)</item>
+        <item>Board is interactive (can click squares to make moves)</item>
+      </then>
+    </ac>
+    <ac id="2" title="Piece Selection and Move Highlighting">
+      <given>A piece is selected</given>
+      <then>
+        <item>Selected square is highlighted (primary color outline)</item>
+        <item>Available move squares are highlighted (subtle highlight)</item>
+        <item>Invalid moves are not highlighted</item>
+      </then>
+    </ac>
+    <ac id="3" title="Board Styling">
+      <given>Board styling matches Classic Chess theme</given>
+      <then>
+        <item>Dark squares: Slate 600 (#475569)</item>
+        <item>Light squares: White or Slate 50 (#f8fafc)</item>
+        <item>Highlight colors: Accent color (#f59e0b) for selected, subtle for available moves</item>
+      </then>
+    </ac>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="5.1 Core Features (V1)">
+        <snippet>Classic Mode: react-chessboard, chess.js rules, stockfish.js AI (browser Web Worker)</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="3. Component Responsibilities - Game Engine Layer">
+        <snippet>chess.js controls legal moves, game state, checkmate logic. react-chessboard renders board and pieces. stockfish.wasm Worker computes best move asynchronously.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="3. Component Responsibilities - Session Layer (Zustand)">
+        <snippet>Responsible for: Current board state (FEN), Score logic, Ability activation + costs, Ability flags (doubleMove, hintMode, shield, etc.), NPC turn logic (Stockfish call), Session reset when match ends</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="8. File & Folder Structure">
+        <snippet>/components/Board/ChessBoard.tsx - Chess board component location. /stores/sessionStore.ts - Session state management. /pages/PlayClassic.tsx - Play page (note: current file is Play.tsx)</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 Color System - Classic Chess Theme">
+        <snippet>Dark squares: Slate 600 (#475569), Light squares: White or Slate 50 (#f8fafc), Accent: #f59e0b (Amber 500) for highlights</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="4.1 Chosen Design Approach - Spacious & Centered">
+        <snippet>Centered content with wide margins on sides. Maximum container width: 1200px. Wide spacing between sections. Hero section on landing page with clear CTAs.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="6.1 Component Strategy - Custom Components Required">
+        <snippet>ChessBoard Component: Purpose: Main game board display. Base: react-chessboard integration. Styling: Classic Chess theme colors (dark squares, light squares). States: Normal, move highlight, invalid move, check indicator. Behavior: Handle move validation, piece highlighting, move animation (subtle)</snippet>
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.4: Chess Board Display with react-chessboard">
+        <snippet>Install react-chessboard: `npm install react-chessboard`. ChessBoard component: `/src/components/Board/ChessBoard.tsx`. Board styling: Custom CSS or Tailwind classes. react-chessboard props: `position`, `onPieceDrop`, `boardOrientation`, `boardWidth`. Initial position: Standard chess starting position (FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"). Board state managed in session store: `boardState` (FEN string)</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file path="src/stores/sessionStore.ts" kind="store" symbol="SessionState" lines="15-47" reason="Session store interface defines boardState field (FEN string) that ChessBoard component must read and update. Contains boardState, sessionScore, difficulty, mode, and setMode/setDifficulty actions." />
+      <file path="src/pages/Play.tsx" kind="page" symbol="Play" lines="10-30" reason="Play page is placeholder that needs to be updated to display ChessBoard component. Currently shows placeholder card that needs replacement with actual board." />
+      <file path="src/components/Board/" kind="directory" symbol="Board" reason="Directory exists but empty. ChessBoard.tsx component will be created here per Architecture section 8 file structure." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="react-chessboard" version="to-be-installed" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      <rule>Chess board component must be located at `/src/components/Board/ChessBoard.tsx` per Architecture section 8 file structure</rule>
+      <rule>Board state (FEN string) must be stored in session store `boardState` field, not in component local state</rule>
+      <rule>Session store never writes to persistence directly - board state is session-only</rule>
+      <rule>Play page must use React Router routing (already configured in App.tsx)</rule>
+    </constraint>
+    <constraint type="styling">
+      <rule>Board styling must match Classic Chess theme colors: Dark squares #475569, Light squares #f8fafc, Accent #f59e0b for highlights</rule>
+      <rule>Layout must follow Spacious & Centered approach: max-width 1200px container, centered content</rule>
+      <rule>Board must be desktop-focused with minimum 1280px width requirement</rule>
+      <rule>Use TailwindCSS classes for styling, not custom CSS files</rule>
+    </constraint>
+    <constraint type="component">
+      <rule>react-chessboard component must be used for visual board rendering - do not create custom board from scratch</rule>
+      <rule>Component must use TypeScript with proper type definitions</rule>
+      <rule>Component must use React hooks (useState, useEffect) for state management</rule>
+      <rule>Component must integrate with Zustand session store using `useSessionStore` hook</rule>
+    </constraint>
+    <constraint type="validation">
+      <rule>Move validation is placeholder in this story - full validation with chess.js will be implemented in Story 3.5</rule>
+      <rule>For now, accept all moves in `onPieceDrop` handler - validation deferred to next story</rule>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="SessionState" kind="TypeScript interface" signature="export interface SessionState { boardState: string; sessionScore: number; difficulty: 'beginner' | 'intermediate' | 'advanced' | null; mode: 'classic' | 'rpg' | null; setMode: (mode: 'classic' | 'rpg' | null) => void; setDifficulty: (difficulty: 'beginner' | 'intermediate' | 'advanced' | null) => void; }" path="src/stores/sessionStore.ts" />
+    <interface name="react-chessboard Chessboard" kind="React component" signature="import { Chessboard } from 'react-chessboard'. Props: position (FEN string), onPieceDrop (handler), boardOrientation ('white' | 'black'), boardWidth (number), customSquareStyles (object), customDarkSquareStyle (style object), customLightSquareStyle (style object), onSquareClick (handler)" path="react-chessboard package" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing approach: Manual testing for visual verification (board display, colors, highlighting). Component testing can use React Testing Library for ChessBoard component behavior. Test board state synchronization with session store. Test responsive behavior on desktop (1280px+ width). No automated test framework specified in project yet - manual testing acceptable for MVP.
+    </standards>
+    <locations>
+      <location>Manual testing: Visual verification in browser</location>
+      <location>Component tests: src/components/Board/ChessBoard.test.tsx (if created)</location>
+      <location>Integration tests: src/pages/Play.test.tsx (if created)</location>
+    </locations>
+    <ideas>
+      <test ac="1" idea="Test chess board displays correctly on desktop (1280px+ width) - verify board renders, pieces visible, board centered" />
+      <test ac="1" idea="Test board renders with standard starting position - verify all pieces in correct positions (FEN: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1)" />
+      <test ac="1" idea="Test board orientation - verify user plays white (bottom), AI plays black (top)" />
+      <test ac="1" idea="Test board is interactive - verify can click squares, board responds to clicks" />
+      <test ac="2" idea="Test piece selection - clicking white piece highlights square with primary color outline" />
+      <test ac="2" idea="Test available moves highlighting - selected piece shows available move squares with subtle highlight" />
+      <test ac="2" idea="Test invalid moves not highlighted - verify only valid moves show highlight" />
+      <test ac="3" idea="Test board colors match Classic Chess theme - dark squares #475569, light squares #f8fafc" />
+      <test ac="3" idea="Test highlight colors - selected square uses accent color #f59e0b, available moves use subtle accent highlight" />
+      <test ac="1" idea="Test board state syncs with session store - verify boardState FEN updates when moves are made" />
+      <test ac="1" idea="Test board is centered on Play page - verify proper spacing and centered layout (max-width 1200px)" />
+    </ideas>
+  </tests>
+</story-context>
+

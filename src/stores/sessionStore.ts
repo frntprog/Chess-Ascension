@@ -44,6 +44,9 @@ export interface SessionState {
   
   /** Action: Set AI difficulty level */
   setDifficulty: (difficulty: 'beginner' | 'intermediate' | 'advanced' | null) => void;
+  
+  /** Action: Set board state (FEN string) */
+  setBoardState: (boardState: string) => void;
 }
 
 /**
@@ -74,5 +77,6 @@ export const useSessionStore = create<SessionState>()((set) => ({
   sessionLifecycle: 'idle',
   setMode: (mode: 'classic' | 'rpg' | null) => set({ mode }),
   setDifficulty: (difficulty: 'beginner' | 'intermediate' | 'advanced' | null) => set({ difficulty }),
+  setBoardState: (boardState: string) => set({ boardState }),
 }));
 

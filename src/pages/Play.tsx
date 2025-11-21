@@ -1,29 +1,19 @@
 /**
  * Play Page Component
  * 
- * Placeholder page for Play route.
- * Actual gameplay functionality will be implemented in Epic 3.
+ * Game board page displaying the chess board.
+ * Implements centered layout per UX Design Specification section 4.1.
  */
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/UI/card"
+import { ChessBoard } from "@/components/Board/ChessBoard"
 
 export function Play() {
   return (
     <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-3xl text-[#1e293b]">Play Chess</CardTitle>
-            <CardDescription className="text-[#475569]">
-              Gameplay functionality coming soon in Epic 3
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-[#64748b]">
-              The chess gameplay features will be implemented in Epic 3: Classic Mode Chess Gameplay.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="max-w-[1200px] mx-auto">
+        <div className="flex justify-center items-center py-8">
+          <ChessBoard />
+        </div>
       </div>
     </div>
   )
