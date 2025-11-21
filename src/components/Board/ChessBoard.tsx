@@ -158,38 +158,44 @@ export function ChessBoard() {
       return false;
     }
 
-    // Update session store with new FEN
-    setBoardState(moveResult.fen);
+    // Update session store with new FEN after animation frame
+    // This allows react-chessboard to animate the move before position prop updates
+    requestAnimationFrame(() => {
+      setBoardState(moveResult.fen);
+      
+      // Update game status in session store (for Story 3.9 match end detection)
+      if (moveResult.isCheckmate) {
+        setGameStatus('checkmate');
+        console.log('Checkmate detected');
+      } else if (moveResult.isStalemate) {
+        setGameStatus('stalemate');
+        console.log('Stalemate detected');
+      } else if (moveResult.isDraw) {
+        setGameStatus('draw');
+        console.log('Draw detected');
+      } else if (moveResult.inCheck) {
+        setGameStatus('check');
+        console.log('Check detected');
+      } else {
+        setGameStatus('normal');
+      }
 
-    // Update game status in session store (for Story 3.9 match end detection)
-    if (moveResult.isCheckmate) {
-      setGameStatus('checkmate');
-      console.log('Checkmate detected');
-    } else if (moveResult.isStalemate) {
-      setGameStatus('stalemate');
-      console.log('Stalemate detected');
-    } else if (moveResult.isDraw) {
-      setGameStatus('draw');
-      console.log('Draw detected');
-    } else if (moveResult.inCheck) {
-      setGameStatus('check');
-      console.log('Check detected');
-    } else {
-      setGameStatus('normal');
-    }
+      // Update current turn in session store (for UI display)
+      setCurrentTurn(moveResult.turn === 'w' ? 'white' : 'black');
 
-    // Update current turn in session store (for UI display)
-    setCurrentTurn(moveResult.turn === 'w' ? 'white' : 'black');
+      // Check if it's AI's turn (black) and trigger AI move
+      // Delay AI move slightly to allow user move animation to complete
+      if (moveResult.turn === 'b' && stockfishWorkerRef.current && difficulty) {
+        setTimeout(() => {
+          triggerAIMove();
+        }, 100);
+      }
+    });
 
     // Clear error state and selection
     setMoveError(null);
     setSelectedSquare(null);
     setAvailableMoves([]);
-
-    // Check if it's AI's turn (black) and trigger AI move
-    if (moveResult.turn === 'b' && stockfishWorkerRef.current && difficulty) {
-      triggerAIMove();
-    }
 
     // Move successful - return true to allow react-chessboard to update
     return true;
@@ -203,6 +209,7 @@ export function ChessBoard() {
 
     setIsAIThinking(true);
     const engine = chessEngineRef.current;
+    // Use engine's FEN directly - engine is always up-to-date after user moves
     const currentFEN = engine.getFEN();
     const depth = getDepthForDifficulty(difficulty);
 
@@ -215,7 +222,7 @@ export function ChessBoard() {
       const to = bestMove.substring(2, 4);
       const promotion = bestMove.length > 4 ? bestMove.substring(4, 5) : undefined;
 
-      // Execute AI move
+      // Execute AI move - engine is already in correct state
       const moveResult = engine.makeMove(from, to, promotion);
       
       if (!moveResult || !moveResult.success) {
@@ -229,7 +236,8 @@ export function ChessBoard() {
         return;
       }
 
-      // Update session store with new FEN
+      // Update session store with new FEN immediately for AI moves
+      // AI moves don't need animation delay since they're programmatic
       setBoardState(moveResult.fen);
 
       // Update game status
