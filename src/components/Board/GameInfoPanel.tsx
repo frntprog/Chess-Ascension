@@ -58,7 +58,7 @@ export function GameInfoPanel() {
       <CardContent className="flex flex-col gap-4">
         {/* Turn Indicator */}
         <div className="flex flex-col gap-2">
-          <div className="text-sm font-medium text-muted-foreground">
+          <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
             Turn
           </div>
           <div className="text-base font-semibold text-primary">
@@ -68,7 +68,7 @@ export function GameInfoPanel() {
 
         {/* Game Status */}
         <div className="flex flex-col gap-2">
-          <div className="text-sm font-medium text-muted-foreground">
+          <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
             Status
           </div>
           <Badge variant={statusDisplay.variant} className="w-fit">

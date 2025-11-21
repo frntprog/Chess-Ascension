@@ -12,8 +12,12 @@ import { Badge } from "@/components/UI/badge"
 import { Separator } from "@/components/UI/separator"
 import { Button } from "@/components/UI/button"
 import { useProfileStore } from "@/stores/profileStore"
-import { loadProfile, profileExists } from "@/services/profileStorage"
+import { loadProfile, profileExists, saveProfile } from "@/services/profileStorage"
 import { useToast } from "@/components/UI/toast"
+import { calculateLevel } from "@/utils/calculateLevel"
+import { getRankFromLevel } from "@/utils/rankMapping"
+import { getSkinsUnlockedAtLevel } from "@/utils/skinUnlocks"
+import { getAbilitiesUnlockedAtLevel } from "@/utils/abilityUnlocks"
 
 /**
  * Calculate win rate percentage
@@ -71,14 +75,22 @@ export function Profile() {
       try {
         const profile = loadProfile()
         if (profile) {
+          // Recalculate level and rank from XP (handles formula changes)
+          const recalculatedLevel = calculateLevel(profile.xp);
+          const recalculatedRank = getRankFromLevel(recalculatedLevel);
+          
+          // Recalculate unlocked skins and abilities based on new level
+          const unlockedSkins = getSkinsUnlockedAtLevel(recalculatedLevel);
+          const unlockedAbilities = getAbilitiesUnlockedAtLevel(recalculatedLevel);
+          
           updateProfile({
             nickname: profile.nickname,
             xp: profile.xp,
-            level: profile.level,
-            rank: profile.rank,
-            unlockedSkins: profile.unlockedSkins,
-            selectedSkin: profile.selectedSkin,
-            unlockedAbilities: profile.unlockedAbilities,
+            level: recalculatedLevel,
+            rank: recalculatedRank,
+            unlockedSkins: unlockedSkins,
+            selectedSkin: profile.selectedSkin || 'Classic',
+            unlockedAbilities: unlockedAbilities,
             bestScore: profile.bestScore,
             stats: {
               gamesPlayed: profile.gamesPlayed,
@@ -86,6 +98,26 @@ export function Profile() {
               losses: profile.losses,
             },
           })
+          
+          // Save recalculated profile back to localStorage
+          try {
+            saveProfile({
+              nickname: profile.nickname,
+              xp: profile.xp,
+              level: recalculatedLevel,
+              rank: recalculatedRank,
+              unlockedSkins: unlockedSkins,
+              selectedSkin: profile.selectedSkin || 'Classic',
+              unlockedAbilities: unlockedAbilities,
+              gamesPlayed: profile.gamesPlayed,
+              bestScore: profile.bestScore,
+              wins: profile.wins,
+              losses: profile.losses,
+            });
+          } catch (error) {
+            console.warn('Failed to save recalculated profile:', error);
+          }
+          
           setIsLoading(false)
         } else {
           setError("Failed to load profile data. Please try again.")
@@ -111,14 +143,22 @@ export function Profile() {
       if (profileExists()) {
         const profile = loadProfile()
         if (profile) {
+          // Recalculate level and rank from XP (handles formula changes)
+          const recalculatedLevel = calculateLevel(profile.xp);
+          const recalculatedRank = getRankFromLevel(recalculatedLevel);
+          
+          // Recalculate unlocked skins and abilities based on new level
+          const unlockedSkins = getSkinsUnlockedAtLevel(recalculatedLevel);
+          const unlockedAbilities = getAbilitiesUnlockedAtLevel(recalculatedLevel);
+          
           updateProfile({
             nickname: profile.nickname,
             xp: profile.xp,
-            level: profile.level,
-            rank: profile.rank,
-            unlockedSkins: profile.unlockedSkins,
-            selectedSkin: profile.selectedSkin,
-            unlockedAbilities: profile.unlockedAbilities,
+            level: recalculatedLevel,
+            rank: recalculatedRank,
+            unlockedSkins: unlockedSkins,
+            selectedSkin: profile.selectedSkin || 'Classic',
+            unlockedAbilities: unlockedAbilities,
             bestScore: profile.bestScore,
             stats: {
               gamesPlayed: profile.gamesPlayed,
@@ -126,6 +166,26 @@ export function Profile() {
               losses: profile.losses,
             },
           })
+          
+          // Save recalculated profile back to localStorage
+          try {
+            saveProfile({
+              nickname: profile.nickname,
+              xp: profile.xp,
+              level: recalculatedLevel,
+              rank: recalculatedRank,
+              unlockedSkins: unlockedSkins,
+              selectedSkin: profile.selectedSkin || 'Classic',
+              unlockedAbilities: unlockedAbilities,
+              gamesPlayed: profile.gamesPlayed,
+              bestScore: profile.bestScore,
+              wins: profile.wins,
+              losses: profile.losses,
+            });
+          } catch (error) {
+            console.warn('Failed to save recalculated profile:', error);
+          }
+          
           setIsLoading(false)
         } else {
           setError("Failed to load profile data. Please try again.")
