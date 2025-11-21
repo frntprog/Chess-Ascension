@@ -1,0 +1,208 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>6</storyId>
+    <title>Stockfish AI Integration with Web Worker</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-6-stockfish-ai-integration-with-web-worker.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want the AI to make moves automatically</iWant>
+    <soThat>so that I can play chess against a computer opponent</soThat>
+    <tasks>
+- [ ] **Task 1: Install Stockfish Package** (AC: 3)
+  - [ ] Research Stockfish.js options: `stockfish.js` npm package or CDN
+  - [ ] Install Stockfish package: `npm install stockfish.js` or configure CDN loading
+  - [ ] Verify package includes WASM support for better performance
+  - [ ] Verify TypeScript types are available (package includes types or @types/stockfish.js)
+  - [ ] Test import: `import Stockfish from 'stockfish.js'` or CDN loading
+
+- [ ] **Task 2: Create Stockfish Worker Module** (AC: 3)
+  - [ ] Create `/src/core/chess/stockfishWorker.ts` file
+  - [ ] Create Stockfish worker instance using Web Worker API
+  - [ ] Implement worker message handling:
+    - Send position to Stockfish: `worker.postMessage({ type: 'position', fen })`
+    - Receive best move: `worker.onmessage` handler
+    - Handle worker errors: `worker.onerror` handler
+  - [ ] Implement difficulty-to-depth mapping:
+    - Beginner: depth 5
+    - Intermediate: depth 10
+    - Advanced: depth 15
+  - [ ] Export functions:
+    - `createStockfishWorker(): Worker` - Create and initialize worker
+    - `getBestMove(worker: Worker, fen: string, depth: number): Promise<string>` - Get best move from Stockfish
+    - `terminateWorker(worker: Worker): void` - Clean up worker
+
+- [ ] **Task 3: Create Stockfish Loader Utility** (AC: 3)
+  - [ ] Create `/src/core/chess/stockfishLoader.ts` file
+  - [ ] Implement Stockfish WASM loading:
+    - Load Stockfish WASM file from `/public/worker/stockfish.wasm` or CDN
+    - Handle loading errors gracefully
+    - Return worker instance when ready
+  - [ ] Export function:
+    - `loadStockfishWorker(): Promise<Worker>` - Load and initialize Stockfish worker
+
+- [ ] **Task 4: Integrate Stockfish with ChessBoard Component** (AC: 1)
+  - [ ] Open `/src/components/Board/ChessBoard.tsx`
+  - [ ] Import Stockfish worker utilities: `import { loadStockfishWorker, getBestMove } from '@/core/chess/stockfishWorker'`
+  - [ ] Add state for AI thinking: `const [isAIThinking, setIsAIThinking] = useState(false)`
+  - [ ] Add state for Stockfish worker: `const [stockfishWorker, setStockfishWorker] = useState<Worker | null>(null)`
+  - [ ] Initialize Stockfish worker on component mount (use `useEffect`)
+  - [ ] After user makes valid move, check if it's AI's turn:
+    - If `engine.getTurn() === 'b'` (AI's turn):
+      - Set `isAIThinking = true`
+      - Disable board interaction
+      - Get difficulty from session store
+      - Map difficulty to depth
+      - Call `getBestMove(worker, currentFEN, depth)`
+      - Wait for best move response
+      - Execute move using `engine.makeMove(from, to)`
+      - Update board state in session store
+      - Set `isAIThinking = false`
+      - Re-enable board interaction
+
+- [ ] **Task 5: Implement AI Thinking Indicator** (AC: 2)
+  - [ ] Add loading indicator UI component:
+    - Show spinner or "AI thinking..." message when `isAIThinking === true`
+    - Display current difficulty level (from session store)
+    - Position indicator above or below chess board
+  - [ ] Use shadcn/ui components if available (e.g., Badge for difficulty, Spinner for loading)
+  - [ ] Style indicator with Classic Chess theme colors
+  - [ ] Hide indicator when `isAIThinking === false`
+
+- [ ] **Task 6: Disable Board During AI Turn** (AC: 2)
+  - [ ] Update `handlePieceDrop` to check `isAIThinking`:
+    - If `isAIThinking === true`, return false immediately (reject move)
+    - Show message: "AI is thinking, please wait..."
+  - [ ] Update `handleSquareClick` to check `isAIThinking`:
+    - If `isAIThinking === true`, return early (prevent piece selection)
+  - [ ] Disable react-chessboard interaction when `isAIThinking === true`:
+    - Use `arePiecesDraggable` prop or similar to disable dragging
+    - Use `areArrowsAllowed` prop or similar to disable interactions
+
+- [ ] **Task 7: Update Session Store with Difficulty** (AC: 1)
+  - [ ] Verify session store has `difficulty` field (already exists from Story 3.3)
+  - [ ] Verify `setDifficulty` action exists (already exists from Story 3.3)
+  - [ ] In ChessBoard component, read difficulty from session store: `const { difficulty } = useSessionStore()`
+  - [ ] Map difficulty to Stockfish depth:
+    - `'beginner'` → depth 5
+    - `'intermediate'` → depth 10
+    - `'advanced'` → depth 15
+
+- [ ] **Task 8: Handle Worker Lifecycle** (AC: 3)
+  - [ ] Initialize worker on component mount
+  - [ ] Clean up worker on component unmount:
+    - Call `terminateWorker(worker)` in `useEffect` cleanup function
+  - [ ] Handle worker errors gracefully:
+    - Show error message if worker fails to load
+    - Show error message if worker crashes during move calculation
+    - Fallback: Disable AI moves if worker unavailable
+
+- [ ] **Task 9: Testing and Verification** (AC: All)
+  - [ ] Test AI makes moves after user moves
+  - [ ] Test AI move is legal (validated by chess.js)
+  - [ ] Test board state updates after AI move
+  - [ ] Test turn switches back to user after AI move
+  - [ ] Test loading indicator shows during AI thinking
+  - [ ] Test board is disabled during AI thinking
+  - [ ] Test difficulty mapping (beginner = depth 5, intermediate = depth 10, advanced = depth 15)
+  - [ ] Test worker cleanup on component unmount
+  - [ ] Test worker error handling
+  - [ ] Test AI move calculation performance (should be non-blocking)
+  - [ ] Verify no console errors or warnings
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**AC1: AI Move Calculation**
+Given a user makes a valid move
+When it becomes the AI's turn
+Then the AI calculates and makes a move:
+- Stockfish Web Worker is invoked
+- AI calculates best move based on difficulty:
+  - Beginner: Lower depth (e.g., depth 5)
+  - Intermediate: Medium depth (e.g., depth 10)
+  - Advanced: Higher depth (e.g., depth 15)
+- Best move is returned from Stockfish
+- Move is executed on board (chess.js applies move)
+- Board state is updated (FEN updated in session store)
+- Turn switches back to user
+
+**AC2: AI Thinking Indicator**
+And while AI is thinking:
+- Loading indicator shown (spinner or "AI thinking..." message)
+- Board is disabled (user cannot make moves)
+- Difficulty indicator shows current AI level
+
+**AC3: Web Worker Implementation**
+And Stockfish worker:
+- Runs in separate Web Worker thread (non-blocking)
+- Uses Stockfish WASM for better performance
+- Worker file: `/public/worker/stockfish.js` or loaded from CDN
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="5.1 Core Features" snippet="stockfish.js AI (browser Web Worker) for Classic Mode gameplay. Stockfish integration enables AI opponent moves calculated client-side." />
+      <doc path="docs/architecture.md" title="Architecture Specification" section="3. Component Responsibilities - Game Engine Layer" snippet="stockfish.wasm Worker computes best move asynchronously. No direct persistence interactions. Stockfish worker runs in separate thread for non-blocking AI calculations." />
+      <doc path="docs/architecture.md" title="Architecture Specification" section="8. File & Folder Structure" snippet="Stockfish worker files: `/src/core/chess/stockfishWorker.ts`, `/src/core/chess/stockfishLoader.ts`, `/public/worker/stockfish.wasm`, `/public/worker/stockfish.js`" />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="7.2 Feedback Patterns" snippet="Loading feedback pattern: Spinner on button or simple loading indicator. Placement: On action button or center of loading area. Style: Subtle spinner, disabled button state. Usage: During API calls, game initialization." />
+      <doc path="docs/epics.md" title="Epics and Stories" section="Story 3.6: Stockfish AI Integration with Web Worker" snippet="Stockfish integration with difficulty mapping (Beginner: depth 5, Intermediate: depth 10, Advanced: depth 15). Web Worker implementation for non-blocking AI calculations. AI thinking indicator and board disabling during AI turn." />
+    </docs>
+    <code>
+      <file path="src/components/Board/ChessBoard.tsx" kind="component" symbol="ChessBoard" lines="1-244" reason="Main chess board component that needs Stockfish integration. Already has chess.js validation, turn management, and board state sync. Needs AI move trigger after user moves." />
+      <file path="src/core/chess/engine.ts" kind="service" symbol="ChessEngine" lines="1-224" reason="Chess engine wrapper with makeMove(), getTurn(), getFEN() methods. Used to execute AI moves after Stockfish returns best move. Provides move validation and game state queries." />
+      <file path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore" lines="1-97" reason="Session store with boardState, difficulty, currentTurn, gameStatus fields. Already has setBoardState, setDifficulty, setCurrentTurn actions. Used to read difficulty and update board state after AI moves." />
+    </code>
+    <dependencies>
+      <node>
+        <package name="chess.js" version="^1.4.0" />
+        <package name="react-chessboard" version="^5.8.4" />
+        <package name="react" version="^19.2.0" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="lucide-react" version="^0.554.0" />
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Stockfish worker must run in separate Web Worker thread (non-blocking) - Architecture section 3 (Game Engine Layer)</constraint>
+    <constraint>Stockfish worker files: `/src/core/chess/stockfishWorker.ts`, `/src/core/chess/stockfishLoader.ts` - Architecture section 8 (File & Folder Structure)</constraint>
+    <constraint>Stockfish WASM files: `/public/worker/stockfish.wasm`, `/public/worker/stockfish.js` - Architecture section 8</constraint>
+    <constraint>No direct persistence: Game engine layer does not write to localStorage - Architecture section 3 (Game Engine Layer)</constraint>
+    <constraint>Board state updates: After AI move execution, update session store `boardState` using `setBoardState` action - Architecture section 4 (Data Flow)</constraint>
+    <constraint>Difficulty mapping: Beginner = depth 5, Intermediate = depth 10, Advanced = depth 15 - Story 3.6 acceptance criteria</constraint>
+    <constraint>User plays white, AI plays black - Turn management pattern from Story 3.5</constraint>
+    <constraint>ChessEngine instance should persist across re-renders using `useRef` - Learnings from Story 3.5</constraint>
+    <constraint>Loading indicator: Use shadcn/ui components or custom spinner - UX Design Specification section 7.2 (Feedback Patterns)</constraint>
+    <constraint>Board disabling: Prevent user interaction during AI thinking - UX Design Specification section 7.2</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Stockfish Worker API" kind="Web Worker API" signature="worker.postMessage({ type: 'position', fen: string }) → worker.onmessage({ bestMove: string })" path="src/core/chess/stockfishWorker.ts" />
+    <interface name="ChessEngine.makeMove" kind="function signature" signature="makeMove(from: string, to: string, promotion?: string): MoveResult | null" path="src/core/chess/engine.ts" />
+    <interface name="ChessEngine.getTurn" kind="function signature" signature="getTurn(): 'w' | 'b'" path="src/core/chess/engine.ts" />
+    <interface name="SessionStore.difficulty" kind="store field" signature="difficulty: 'beginner' | 'intermediate' | 'advanced' | null" path="src/stores/sessionStore.ts" />
+    <interface name="SessionStore.setBoardState" kind="store action" signature="setBoardState(boardState: string): void" path="src/stores/sessionStore.ts" />
+  </interfaces>
+
+  <tests>
+    <standards>Testing should verify AI move calculation, board state updates, turn management, loading indicator display, board disabling during AI thinking, difficulty mapping, worker lifecycle, and error handling. Use manual testing for MVP. Test AI makes legal moves validated by chess.js, board state syncs correctly, turn switches properly, and worker cleanup prevents memory leaks.</standards>
+    <locations>Manual testing in browser. Test files can be added to `/src/__tests__/` or `/tests/` directory in future (deferred for MVP).</locations>
+    <ideas>
+      <test acId="AC1" idea="Test AI makes move after user move: Make user move, verify AI responds with legal move, verify board state updates, verify turn switches back to user" />
+      <test acId="AC1" idea="Test difficulty mapping: Set difficulty to beginner, verify Stockfish depth is 5. Set to intermediate, verify depth 10. Set to advanced, verify depth 15" />
+      <test acId="AC1" idea="Test AI move validation: Verify AI move is legal according to chess.js rules, verify move is executed correctly, verify FEN updates in session store" />
+      <test acId="AC2" idea="Test loading indicator: Verify spinner or 'AI thinking...' message shows when isAIThinking is true, verify difficulty indicator displays current AI level, verify indicator hides when AI thinking completes" />
+      <test acId="AC2" idea="Test board disabling: Verify handlePieceDrop rejects moves when isAIThinking is true, verify handleSquareClick prevents piece selection when isAIThinking is true, verify react-chessboard interactions are disabled during AI thinking" />
+      <test acId="AC3" idea="Test worker lifecycle: Verify worker initializes on component mount, verify worker terminates on component unmount, verify no memory leaks from worker instances" />
+      <test acId="AC3" idea="Test worker error handling: Verify error message shown if worker fails to load, verify error message shown if worker crashes during move calculation, verify fallback behavior if worker unavailable" />
+      <test acId="AC3" idea="Test non-blocking performance: Verify AI move calculation does not block UI thread, verify board remains responsive during AI thinking (except for move input), verify worker runs in separate thread" />
+    </ideas>
+  </tests>
+</story-context>
+

@@ -60,8 +60,8 @@ development_status:
   3-2-mode-selection-page: done  # Approved after re-review - All issues resolved
   3-3-difficulty-selection-component: done  # Approved after code review
   3-4-chess-board-display-with-react-chessboard: done  # Approved after code review, React 19 upgrade performed
-  3-5-chess-move-validation-with-chess-js: backlog
-  3-6-stockfish-ai-integration-with-web-worker: backlog
+  3-5-chess-move-validation-with-chess-js: done  # Approved after code review
+  3-6-stockfish-ai-integration-with-web-worker: ready-for-dev
   3-7-session-score-tracking-system: backlog
   3-8-optional-combo-bonus-system: backlog
   3-9-match-end-detection-and-result: backlog

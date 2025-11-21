@@ -20,7 +20,7 @@ export interface SessionState {
   sessionScore: number;
   
   /** Session abilities array (not implemented in Epic 1) */
-  sessionAbilities: any[];
+  sessionAbilities: unknown[];
   
   /** RPG mode flags (not implemented in Epic 1) */
   rpgFlags: {
@@ -39,6 +39,12 @@ export interface SessionState {
   /** Match lifecycle state */
   sessionLifecycle: 'idle' | 'active' | 'ended';
   
+  /** Game status (optional, for Story 3.9 match end detection) */
+  gameStatus: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw';
+  
+  /** Current turn (optional, for UI display) */
+  currentTurn: 'white' | 'black';
+  
   /** Action: Set selected game mode */
   setMode: (mode: 'classic' | 'rpg' | null) => void;
   
@@ -47,6 +53,12 @@ export interface SessionState {
   
   /** Action: Set board state (FEN string) */
   setBoardState: (boardState: string) => void;
+  
+  /** Action: Set game status (optional, for Story 3.9) */
+  setGameStatus: (status: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw') => void;
+  
+  /** Action: Set current turn (optional, for UI display) */
+  setCurrentTurn: (turn: 'white' | 'black') => void;
 }
 
 /**
@@ -75,8 +87,12 @@ export const useSessionStore = create<SessionState>()((set) => ({
   difficulty: null,
   mode: null,
   sessionLifecycle: 'idle',
+  gameStatus: 'normal',
+  currentTurn: 'white',
   setMode: (mode: 'classic' | 'rpg' | null) => set({ mode }),
   setDifficulty: (difficulty: 'beginner' | 'intermediate' | 'advanced' | null) => set({ difficulty }),
   setBoardState: (boardState: string) => set({ boardState }),
+  setGameStatus: (status: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw') => set({ gameStatus: status }),
+  setCurrentTurn: (turn: 'white' | 'black') => set({ currentTurn: turn }),
 }));
 
