@@ -105,8 +105,27 @@ export function ChessBoard() {
       if (boardState !== currentFEN) {
         chessEngineRef.current.loadFEN(boardState);
       }
+      
+      // Update game status based on current board state
+      if (chessEngineRef.current) {
+        if (chessEngineRef.current.isCheckmate()) {
+          setGameStatus('checkmate');
+        } else if (chessEngineRef.current.isStalemate()) {
+          setGameStatus('stalemate');
+        } else if (chessEngineRef.current.isDraw()) {
+          setGameStatus('draw');
+        } else if (chessEngineRef.current.isCheck()) {
+          setGameStatus('check');
+        } else {
+          setGameStatus('normal');
+        }
+        
+        // Update current turn
+        const turn = chessEngineRef.current.getTurn();
+        setCurrentTurn(turn === 'w' ? 'white' : 'black');
+      }
     }
-  }, [boardState]);
+  }, [boardState, setGameStatus, setCurrentTurn]);
 
   // Get current position from session store or use starting position
   const currentPosition = boardState || STARTING_FEN;
@@ -211,16 +230,12 @@ export function ChessBoard() {
       // Update game status in session store (for Story 3.9 match end detection)
       if (moveResult.isCheckmate) {
         setGameStatus('checkmate');
-        console.log('Checkmate detected');
       } else if (moveResult.isStalemate) {
         setGameStatus('stalemate');
-        console.log('Stalemate detected');
       } else if (moveResult.isDraw) {
         setGameStatus('draw');
-        console.log('Draw detected');
       } else if (moveResult.inCheck) {
         setGameStatus('check');
-        console.log('Check detected');
       } else {
         setGameStatus('normal');
       }
@@ -291,16 +306,12 @@ export function ChessBoard() {
       // Update game status
       if (moveResult.isCheckmate) {
         setGameStatus('checkmate');
-        console.log('Checkmate detected');
       } else if (moveResult.isStalemate) {
         setGameStatus('stalemate');
-        console.log('Stalemate detected');
       } else if (moveResult.isDraw) {
         setGameStatus('draw');
-        console.log('Draw detected');
       } else if (moveResult.inCheck) {
         setGameStatus('check');
-        console.log('Check detected');
       } else {
         setGameStatus('normal');
       }

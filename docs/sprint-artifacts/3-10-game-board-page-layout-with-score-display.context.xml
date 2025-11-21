@@ -1,0 +1,237 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>10</storyId>
+    <title>Game Board Page Layout with Score Display</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-10-game-board-page-layout-with-score-display.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want a well-organized game board layout</iWant>
+    <soThat>so that I can see all game information clearly</soThat>
+    <tasks>
+- [ ] **Task 1: Add Difficulty Indicator Badge** (AC: 1)
+  - [ ] Open `/src/pages/Play.tsx`
+  - [ ] Import `useSessionStore` to read `difficulty` from session store
+  - [ ] Import Badge component from shadcn/ui: `import { Badge } from '@/components/UI/badge'`
+  - [ ] Create helper function `getDifficultyDisplayName(difficulty: string | null): string`:
+    - Maps 'beginner' → "Beginner"
+    - Maps 'intermediate' → "Intermediate"
+    - Maps 'advanced' → "Advanced"
+    - Returns "Unknown" if difficulty is null
+  - [ ] Add difficulty badge to layout (positioned near score display or top of page)
+  - [ ] Style badge with Classic Chess theme colors (secondary variant)
+  - [ ] Display difficulty badge only when difficulty is set
+
+- [ ] **Task 2: Add Back Button Navigation** (AC: 1)
+  - [ ] Open `/src/pages/Play.tsx`
+  - [ ] Import `useNavigate` from `react-router-dom` (already imported)
+  - [ ] Import Button component from shadcn/ui: `import { Button } from '@/components/UI/button'`
+  - [ ] Import ArrowLeft icon from lucide-react: `import { ArrowLeft } from 'lucide-react'`
+  - [ ] Add "Back" button to top-left of layout
+  - [ ] Button navigates to `/mode-selection` when clicked
+  - [ ] Style button with secondary variant, include left arrow icon
+  - [ ] Position button: top-left corner with adequate spacing
+
+- [ ] **Task 3: Create Game Info Panel Component** (AC: 1)
+  - [ ] Create `/src/components/Board/GameInfoPanel.tsx` file
+  - [ ] Import `useSessionStore` to read `currentTurn`, `gameStatus`, `difficulty`
+  - [ ] Import Card components from shadcn/ui: `Card`, `CardContent`, `CardHeader`, `CardTitle`
+  - [ ] Import Badge component from shadcn/ui
+  - [ ] Create props interface (optional, if needed for future customization)
+  - [ ] Display turn indicator:
+    - If `currentTurn === 'white'` → "Your turn"
+    - If `currentTurn === 'black'` → "AI thinking..."
+    - Show loading spinner when AI is thinking (optional enhancement)
+  - [ ] Display game status:
+    - If `gameStatus === 'normal'` → "Normal"
+    - If `gameStatus === 'check'` → "Check" (with warning color)
+    - If `gameStatus === 'checkmate'` → "Checkmate" (with error color)
+    - If `gameStatus === 'stalemate'` → "Stalemate" (with muted color)
+    - If `gameStatus === 'draw'` → "Draw" (with muted color)
+  - [ ] Style panel with Classic Chess theme colors
+  - [ ] Use Card component for panel container
+  - [ ] Export GameInfoPanel component
+
+- [ ] **Task 4: Integrate Game Info Panel in Play Page** (AC: 1)
+  - [ ] Open `/src/pages/Play.tsx`
+  - [ ] Import GameInfoPanel component: `import { GameInfoPanel } from '@/components/Board/GameInfoPanel'`
+  - [ ] Add GameInfoPanel to layout (positioned near score display or below board on mobile)
+  - [ ] Ensure panel updates in real-time when game state changes
+  - [ ] Position panel appropriately in responsive layout
+
+- [ ] **Task 5: Enhance Responsive Layout** (AC: 2)
+  - [ ] Open `/src/pages/Play.tsx`
+  - [ ] Review current layout structure (flexbox with responsive classes)
+  - [ ] Ensure desktop layout (1280px+):
+    - Board centered
+    - Score display and game info panel in sidebar (right side)
+    - Adequate spacing between board and sidebar (gap-8 or similar)
+  - [ ] Ensure mobile layout (< 1280px):
+    - Board centered
+    - Score display and game info panel below board
+    - Stacked vertically with adequate spacing
+  - [ ] Verify "Spacious & Centered" design principles:
+    - Max-width container (1200px)
+    - Centered content
+    - Adequate padding (p-8 or similar)
+    - Consistent spacing between elements
+  - [ ] Test responsive breakpoints: mobile (< 640px), tablet (640px-1280px), desktop (1280px+)
+
+- [ ] **Task 6: Testing and Verification** (AC: All)
+  - [ ] Test difficulty badge displays correctly for all difficulty levels
+  - [ ] Test "Back" button navigates to `/mode-selection`
+  - [ ] Test game info panel displays correct turn indicator
+  - [ ] Test game info panel displays correct game status
+  - [ ] Test responsive layout on desktop (1280px+)
+  - [ ] Test responsive layout on tablet (640px-1280px)
+  - [ ] Test responsive layout on mobile (< 640px)
+  - [ ] Verify all components update in real-time when game state changes
+  - [ ] Verify adequate spacing between all elements
+  - [ ] Verify no console errors or warnings
+  - [ ] Verify layout matches "Spacious & Centered" design principles
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**AC1: Game Board Layout Structure**
+Given a user is playing a match
+When the game board page is displayed
+Then the layout includes:
+- Chess board (centered, main focus)
+- Score display component (sidebar or below board):
+  - Current score (large, prominent)
+  - XP preview: "XP: {floor(score / 10)}"
+- Difficulty indicator badge (shows current difficulty level)
+- "Back" button or link (top-left, returns to mode selection)
+- Game info panel (optional):
+  - Turn indicator (Your turn / AI thinking)
+  - Game status (Normal / Check / Checkmate)
+
+**AC2: Responsive Layout**
+And layout is responsive:
+- Desktop (1280px+): Board centered, score sidebar
+- Layout matches "Spacious & Centered" design (UX Design Specification section 4.1)
+- Adequate spacing between elements
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="5.1 Core Features" snippet="Classic Mode features including react-chessboard, chess.js rules, stockfish.js AI, and score system. Layout requirements for game board page." />
+      <doc path="docs/architecture.md" title="Architecture Specification" section="3 Session Layer" snippet="Session store structure with difficulty, currentTurn, gameStatus fields. Component responsibilities and data flow patterns." />
+      <doc path="docs/architecture.md" title="Architecture Specification" section="8 File & Folder Structure" snippet="File structure for game board page (/src/pages/Play.tsx) and Board components (/src/components/Board/). Component organization patterns." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="4.1 Spacious & Centered" snippet="Layout approach with centered content, max-width 1200px container, wide spacing between sections. Desktop-focused design with adequate padding." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="6.1 Component Library" snippet="shadcn/ui components (Card, Badge, Button) and custom components (ChessBoard, ScoreDisplay). Component styling with Classic Chess theme." />
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 3: Classic Mode Chess Gameplay" snippet="Epic 3 context covering game board display, score tracking, move validation, AI integration. Story 3.10 specific requirements for layout enhancement." />
+    </docs>
+    <code>
+      <artifact path="src/pages/Play.tsx" kind="page" symbol="Play" lines="1-69" reason="Main game board page component. Current layout uses flexbox with responsive classes. Needs enhancement for difficulty badge, back button, and game info panel integration." />
+      <artifact path="src/components/Board/ScoreDisplay.tsx" kind="component" symbol="ScoreDisplay" lines="1-89" reason="Score display component already implemented. Displays current score and XP preview. Positioned in Play page layout." />
+      <artifact path="src/components/Board/ComboDisplay.tsx" kind="component" symbol="ComboDisplay" reason="Combo display component already implemented. Positioned alongside ScoreDisplay in Play page layout." />
+      <artifact path="src/components/Board/ChessBoard.tsx" kind="component" symbol="ChessBoard" reason="Chess board component with game logic. Already displays difficulty badge internally (lines 393-396 per story notes). Play page needs separate difficulty badge in layout." />
+      <artifact path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore" lines="1-221" reason="Session store provides difficulty, currentTurn, gameStatus fields needed for UI display. Store actions for state management." />
+      <artifact path="src/components/UI/badge.tsx" kind="component" symbol="Badge" reason="shadcn/ui Badge component for difficulty indicator. Supports variants (secondary) matching Classic Chess theme." />
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" reason="shadcn/ui Button component for back button navigation. Supports variants (secondary) and icon integration." />
+      <artifact path="src/components/UI/card.tsx" kind="component" symbol="Card, CardContent, CardHeader, CardTitle" reason="shadcn/ui Card components for game info panel container. Provides structured layout with header and content sections." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-separator" version="^1.1.8" />
+        <package name="@radix-ui/react-slot" version="^1.2.4" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Architecture Patterns:**
+  - Session Layer: Use Zustand session store for game state (difficulty, currentTurn, gameStatus) - Architecture section 3
+  - UI Layer: Zero game logic, delegate to session store - Architecture section 3
+  - Component organization: Board-related components in `/src/components/Board/` directory - Architecture section 8
+
+- **Layout Patterns:**
+  - Responsive layout: Use flexbox with Tailwind responsive classes (`flex flex-col lg:flex-row`) - Story 3.9 learnings
+  - Spacious & Centered: Max-width container (1200px), centered content, adequate padding (p-8) - UX Design Specification section 4.1
+  - Desktop-first: Minimum width 1280px, desktop layout with sidebar - UX Design Specification section 8.1
+
+- **Component Patterns:**
+  - shadcn/ui components: Use Card, Badge, Button components with Classic Chess theme colors - UX Design Specification section 6.1
+  - Real-time updates: Components automatically update when session store state changes (Zustand reactivity) - Story 3.9 learnings
+  - Navigation: Use React Router `useNavigate` for navigation - Story 3.9 learnings
+
+- **Styling Constraints:**
+  - Classic Chess theme colors: Primary (#1e293b), Secondary (#475569), Accent (#f59e0b) - UX Design Specification section 3.1
+  - Badge variant: Use secondary variant for difficulty indicator - UX Design Specification section 7.1
+  - Button variant: Use secondary variant for back button - UX Design Specification section 7.1
+
+- **Testing Requirements:**
+  - Test all difficulty levels (beginner, intermediate, advanced)
+  - Test responsive breakpoints (mobile < 640px, tablet 640px-1280px, desktop 1280px+)
+  - Verify real-time updates when game state changes
+  - Verify no console errors or warnings
+  </constraints>
+
+  <interfaces>
+    <interface name="useSessionStore" kind="Zustand store hook" signature="useSessionStore(): SessionState" path="src/stores/sessionStore.ts">
+      <field name="difficulty" type="'beginner' | 'intermediate' | 'advanced' | null" description="AI difficulty level selected by user" />
+      <field name="currentTurn" type="'white' | 'black'" description="Current turn indicator (white = user, black = AI)" />
+      <field name="gameStatus" type="'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw'" description="Current game status for display" />
+    </interface>
+    <interface name="useNavigate" kind="React Router hook" signature="useNavigate(): NavigateFunction" path="react-router-dom">
+      <method name="navigate" signature="navigate(to: string): void" description="Navigate to specified route (e.g., '/mode-selection')" />
+    </interface>
+    <interface name="Badge" kind="shadcn/ui component" signature="Badge({ variant, className, children })" path="src/components/UI/badge.tsx">
+      <prop name="variant" type="'default' | 'secondary' | 'destructive' | 'outline'" description="Badge style variant" />
+    </interface>
+    <interface name="Button" kind="shadcn/ui component" signature="Button({ variant, onClick, className, children })" path="src/components/UI/button.tsx">
+      <prop name="variant" type="'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'" description="Button style variant" />
+      <prop name="onClick" type="() => void" description="Click handler function" />
+    </interface>
+    <interface name="Card" kind="shadcn/ui component" signature="Card({ className, children })" path="src/components/UI/card.tsx">
+      <subcomponent name="CardHeader" description="Card header section" />
+      <subcomponent name="CardTitle" description="Card title text" />
+      <subcomponent name="CardContent" description="Card main content area" />
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Testing follows existing patterns from Story 3.9. Manual testing is primary approach for UI components. Test responsive breakpoints, real-time state updates, and navigation flows. Use browser DevTools for responsive testing and React DevTools for state inspection. Verify no console errors or warnings during development.
+    </standards>
+    <locations>
+- Manual testing: Browser DevTools responsive mode
+- Component testing: Visual inspection in browser
+- State testing: React DevTools for Zustand store inspection
+- Navigation testing: Manual click-through flows
+    </locations>
+    <ideas>
+      <test acId="AC1" description="Test difficulty badge displays correctly for all difficulty levels (beginner, intermediate, advanced)" />
+      <test acId="AC1" description="Test back button navigates to /mode-selection route" />
+      <test acId="AC1" description="Test game info panel displays correct turn indicator (Your turn / AI thinking)" />
+      <test acId="AC1" description="Test game info panel displays correct game status (Normal / Check / Checkmate / Stalemate / Draw)" />
+      <test acId="AC2" description="Test responsive layout on desktop (1280px+): board centered, score sidebar" />
+      <test acId="AC2" description="Test responsive layout on tablet (640px-1280px): board centered, score below board" />
+      <test acId="AC2" description="Test responsive layout on mobile (< 640px): board centered, score below board, stacked vertically" />
+      <test acId="AC1,AC2" description="Verify all components update in real-time when game state changes (difficulty, currentTurn, gameStatus)" />
+      <test acId="AC2" description="Verify adequate spacing between all elements (gap-8 or similar)" />
+      <test acId="AC2" description="Verify layout matches Spacious & Centered design principles (max-width 1200px, centered content, adequate padding)" />
+      <test acId="AC1,AC2" description="Verify no console errors or warnings during component rendering and state updates" />
+    </ideas>
+  </tests>
+</story-context>
+

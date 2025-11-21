@@ -101,6 +101,9 @@ export interface SessionState {
   
   /** Action: Set current combo info for display */
   setCurrentCombo: (combo: { streak: number; bonus: number } | null) => void;
+  
+  /** Action: Reset all session state (for match end) */
+  resetSession: () => void;
 }
 
 /**
@@ -203,5 +206,17 @@ export const useSessionStore = create<SessionState>()((set) => ({
     return 0;
   },
   setCurrentCombo: (combo: { streak: number; bonus: number } | null) => set({ currentCombo: combo }),
+  resetSession: () => {
+    const STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    set({
+      sessionScore: 0,
+      turnNumber: 0,
+      captureHistory: [],
+      boardState: STARTING_FEN,
+      gameStatus: 'normal',
+      sessionLifecycle: 'idle',
+      currentCombo: null,
+    });
+  },
 }));
 
