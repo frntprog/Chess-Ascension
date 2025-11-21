@@ -1,0 +1,312 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-3</epicId>
+    <storyId>3.7</storyId>
+    <title>Session Score Tracking System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-7-session-score-tracking-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user,</asA>
+    <iWant>I want to see my score increase when I capture pieces,</iWant>
+    <soThat>so that I can track my performance during the match.</soThat>
+    <tasks>
+      <task id="1" ac="AC1">
+        <title>Create Score Calculation Utility</title>
+        <subtasks>
+          <subtask>Create /src/utils/calculateScore.ts file</subtask>
+          <subtask>Implement function: calculateScoreForPiece(piece: string): number</subtask>
+          <subtask>Map piece types to score values (Pawn: +10, Knight/Bishop: +20, Rook: +40, Queen: +60)</subtask>
+          <subtask>Export function for use in session store or components</subtask>
+          <subtask>Add TypeScript types for piece types</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="AC1, AC2">
+        <title>Add Session Score to Session Store</title>
+        <subtasks>
+          <subtask>Open /src/stores/sessionStore.ts</subtask>
+          <subtask>Add sessionScore: number field to session store state (initial value: 0)</subtask>
+          <subtask>Add action: setSessionScore(score: number): void</subtask>
+          <subtask>Add action: incrementSessionScore(points: number): void</subtask>
+          <subtask>Add action: resetSessionScore(): void</subtask>
+          <subtask>Verify score is NOT persisted to localStorage (session-only)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="AC1">
+        <title>Detect Piece Captures in ChessBoard Component</title>
+        <subtasks>
+          <subtask>Open /src/components/Board/ChessBoard.tsx</subtask>
+          <subtask>Import calculateScoreForPiece from /src/utils/calculateScore.ts</subtask>
+          <subtask>Import session store actions: incrementSessionScore from session store</subtask>
+          <subtask>After user makes valid move, check if piece was captured using chess.history({ verbose: true })</subtask>
+          <subtask>Check if lastMove.captured exists (captured piece type)</subtask>
+          <subtask>If captured, calculate score and call incrementSessionScore(points)</subtask>
+          <subtask>After AI makes move, check if piece was captured (note: AI captures don't add to user score)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="AC3">
+        <title>Create Score Display Component</title>
+        <subtasks>
+          <subtask>Create /src/components/Board/ScoreDisplay.tsx file</subtask>
+          <subtask>Import session store: useSessionStore to read sessionScore</subtask>
+          <subtask>Display current score prominently (large number, primary color)</subtask>
+          <subtask>Calculate and display XP preview: Math.floor(sessionScore / 10)</subtask>
+          <subtask>Format XP preview: "XP: {xpValue}"</subtask>
+          <subtask>Use shadcn/ui components: Card, Badge for styling</subtask>
+          <subtask>Style with Classic Chess theme colors (primary, accent)</subtask>
+          <subtask>Add visual feedback when score updates: Animate score number, highlight briefly when score increases</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="AC3">
+        <title>Integrate Score Display in Game Board Page</title>
+        <subtasks>
+          <subtask>Open /src/pages/Play.tsx (or game board page component)</subtask>
+          <subtask>Import ScoreDisplay component: import ScoreDisplay from '@/components/Board/ScoreDisplay'</subtask>
+          <subtask>Add ScoreDisplay component to layout (Sidebar or below chess board)</subtask>
+          <subtask>Ensure score display updates in real-time (reactive to session store changes)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="AC2">
+        <title>Reset Score on Match Start</title>
+        <subtasks>
+          <subtask>Identify match start trigger (when user selects mode/difficulty and starts match)</subtask>
+          <subtask>Call resetSessionScore() action when match starts</subtask>
+          <subtask>Verify score resets to 0 at start of each new match</subtask>
+          <subtask>Ensure score persists during match (not reset during match)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac="AC1">
+        <title>Add Visual Feedback for Score Updates</title>
+        <subtasks>
+          <subtask>In ScoreDisplay component, add animation when score increases</subtask>
+          <subtask>Use CSS animation or React transition library</subtask>
+          <subtask>Animate score number (scale up briefly, then return)</subtask>
+          <subtask>Highlight score with accent color briefly</subtask>
+          <subtask>Show capture indicator (optional): Display "+{points}" badge when capture occurs</subtask>
+          <subtask>Ensure animation doesn't block UI or cause performance issues</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac="All">
+        <title>Testing and Verification</title>
+        <subtasks>
+          <subtask>Test score calculation for each piece type (Pawn: +10, Knight: +20, Bishop: +20, Rook: +40, Queen: +60)</subtask>
+          <subtask>Test score updates in session store after capture</subtask>
+          <subtask>Test score display updates in real-time</subtask>
+          <subtask>Test score resets to 0 on new match start</subtask>
+          <subtask>Test score persists during match (not reset during match)</subtask>
+          <subtask>Test score is NOT persisted to localStorage (session-only)</subtask>
+          <subtask>Test XP preview calculation: floor(score / 10)</subtask>
+          <subtask>Test visual feedback (animation/highlight) when score updates</subtask>
+          <subtask>Verify no console errors or warnings</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1" title="Score Calculation on Piece Capture">
+      <given>a user captures an opponent's piece</given>
+      <when>the capture occurs</when>
+      <then>
+        <requirement>Piece capture value added to score: Pawn: +10, Knight/Bishop: +20, Rook: +40, Queen: +60</requirement>
+        <requirement>Score is updated in Zustand session store (sessionScore)</requirement>
+        <requirement>Score display component updates in real-time</requirement>
+        <requirement>Visual feedback: Score number animates or highlights briefly</requirement>
+      </then>
+    </criterion>
+    <criterion id="AC2" title="Session-Only Score Storage">
+      <given>score is session-only</given>
+      <then>
+        <requirement>Stored only in Zustand session store (client-side)</requirement>
+        <requirement>Not persisted to localStorage during match</requirement>
+        <requirement>Reset to 0 when new match starts</requirement>
+      </then>
+    </criterion>
+    <criterion id="AC3" title="Score Display Component">
+      <given>score display shows</given>
+      <then>
+        <requirement>Current score prominently</requirement>
+        <requirement>XP preview: "XP: {floor(score / 10)}" (calculated on the fly)</requirement>
+        <requirement>Score updates immediately after capture</requirement>
+      </then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document — Chess Ascension">
+        <section>Section 6 - Scoring Rules</section>
+        <snippet>Scoring rules: Pawn: +10, Knight/Bishop: +20, Rook: +40, Queen: +60. All scoring lives only in client-side session state. XP conversion: XP = floor(score / 10).</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture — Chess Ascension">
+        <section>Section 3 - Component Responsibilities: Session Layer (Zustand)</section>
+        <snippet>Session Layer manages temporary game state including score logic. Responsible for: current board state (FEN), score logic, ability activation + costs, session reset when match ends. This layer never writes to persistence directly.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture — Chess Ascension">
+        <section>Section 4 - Data Flow Summary: During Match</section>
+        <snippet>During match: User moves → chess.js validates → UI updates. AI move → via Stockfish Worker → updated FEN. Score increments based on captured pieces. Score lives only in session state.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture — Chess Ascension">
+        <section>Section 8 - File & Folder Structure</section>
+        <snippet>File structure: /src/utils/calculateScore.ts (score calculation utility), /src/components/Board/ScoreDisplay.tsx (score display component), /src/stores/sessionStore.ts (session state management).</snippet>
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown">
+        <section>Epic 3: Classic Mode Chess Gameplay - Story 3.7: Session Score Tracking System</section>
+        <snippet>Story 3.7 implements session score tracking where score increases when user captures pieces. Score is session-only (Zustand), not persisted during match, reset on match start. XP preview calculated on the fly as floor(score / 10).</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification">
+        <section>Section 6.1 - Component 2: ScoreDisplay Component</section>
+        <snippet>ScoreDisplay component: Content shows current score and XP preview. Styling uses Card with score number prominent. States: Normal, updating (subtle highlight). Behavior: Update on piece capture, show XP conversion.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification">
+        <section>Section 7.2 - Feedback Patterns</section>
+        <snippet>Success feedback pattern: Subtle inline message or toast notification. Style: Green badge/message with checkmark icon. Duration: 3-5 seconds auto-dismiss. Visual feedback for score updates should be subtle but clear.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore" lines="1-97">
+        <reason>Session store manages sessionScore state. Currently has sessionScore: number field (initial value: 0). Need to add actions: setSessionScore, incrementSessionScore, resetSessionScore. Store is Zustand-based and never writes to persistence directly (Architecture section 3 - Session Layer).</reason>
+      </artifact>
+      <artifact path="src/components/Board/ChessBoard.tsx" kind="component" symbol="ChessBoard" lines="1-391">
+        <reason>ChessBoard component handles move execution and capture detection. Uses ChessEngine.makeMove() to execute moves. After move execution, can access move history via chess.history({ verbose: true }) to detect captured pieces. Need to add capture detection logic after user moves and AI moves.</reason>
+      </artifact>
+      <artifact path="src/core/chess/engine.ts" kind="service" symbol="ChessEngine" lines="1-225">
+        <reason>ChessEngine wraps chess.js and provides makeMove() method that returns MoveResult. Move history accessible via chess.history({ verbose: true }) which includes captured piece information. Engine is always up-to-date after moves.</reason>
+      </artifact>
+      <artifact path="src/pages/Play.tsx" kind="page" symbol="Play" lines="1-21">
+        <reason>Play page displays ChessBoard component. Need to add ScoreDisplay component to layout. Layout uses centered approach per UX Design Specification section 4.1.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0"/>
+        <package name="react-dom" version="^19.2.0"/>
+        <package name="zustand" version="^5.0.8"/>
+        <package name="chess.js" version="^1.4.0"/>
+        <package name="react-chessboard" version="^5.8.4"/>
+        <package name="stockfish.js" version="^10.0.2"/>
+        <package name="react-router-dom" version="^6.30.2"/>
+        <package name="lucide-react" version="^0.554.0"/>
+        <package name="class-variance-authority" version="^0.7.1"/>
+        <package name="clsx" version="^2.1.1"/>
+        <package name="tailwind-merge" version="^3.4.0"/>
+        <package name="@radix-ui/react-dialog" version="^1.1.15"/>
+        <package name="@radix-ui/react-label" version="^2.1.8"/>
+        <package name="@radix-ui/react-separator" version="^1.1.8"/>
+        <package name="@radix-ui/react-slot" version="^1.2.4"/>
+        <package name="tailwindcss" version="^3.4.18"/>
+        <package name="tailwindcss-animate" version="^1.0.7"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint category="architecture">
+      <rule>Session Layer: Score storage uses sessionScore: number in session store (Architecture section 3 - Session Layer). Score logic: Score increments during match, reset on match start. Session-only: Score NOT persisted to localStorage (Architecture section 3 - Session Layer). Session store: /src/stores/sessionStore.ts. Score updates: After piece capture detected (Architecture section 4 - Data Flow: During Match - Score increments).</rule>
+    </constraint>
+    <constraint category="game-engine">
+      <rule>Capture detection: Use chess.history({ verbose: true }) to detect captured pieces (chess.js API). ChessEngine integration: Check captured piece after move execution (from Story 3.5, 3.6). No direct persistence: Game engine layer does not write to localStorage (Architecture section 3 - Game Engine Layer).</rule>
+    </constraint>
+    <constraint category="ui-layer">
+      <rule>Score display component: /src/components/Board/ScoreDisplay.tsx (custom, per UX Design Specification section 6.1, Component 2). Visual feedback: Animation/highlight when score updates (UX Design Specification section 7.2 - Feedback Patterns). Layout: Score display positioned in game board page layout (UX Design Specification section 5.2, Journey 2, step 4).</rule>
+    </constraint>
+    <constraint category="component-integration">
+      <rule>Score calculation: Utility function in /src/utils/calculateScore.ts. Capture detection: In ChessBoard component after move execution. Score update: Call incrementSessionScore() action from session store. Score display: Reactive component that reads from session store.</rule>
+    </constraint>
+    <constraint category="file-structure">
+      <rule>Score calculation utility: /src/utils/calculateScore.ts (Architecture section 8 - File & Folder Structure). Score display component: /src/components/Board/ScoreDisplay.tsx (Architecture section 8). Session store: /src/stores/sessionStore.ts (Architecture section 8).</rule>
+    </constraint>
+    <constraint category="styling">
+      <rule>Use shadcn/ui components: Card, Badge for score display styling. Style with Classic Chess theme colors (primary, accent). Visual feedback: Use CSS animations or React transitions for score update animations. Follow UX Design Specification section 7.2 - Feedback Patterns for subtle but clear feedback.</rule>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="SessionStore" kind="Zustand store" path="src/stores/sessionStore.ts">
+      <signature>
+        export interface SessionState {
+          sessionScore: number;
+          setSessionScore: (score: number) => void;
+          incrementSessionScore: (points: number) => void;
+          resetSessionScore: () => void;
+          // ... other fields
+        }
+      </signature>
+      <note>SessionScore field already exists (initial value: 0). Need to add actions: setSessionScore, incrementSessionScore, resetSessionScore.</note>
+    </interface>
+    <interface name="ChessEngine.makeMove" kind="method" path="src/core/chess/engine.ts">
+      <signature>
+        makeMove(from: string, to: string, promotion?: string): MoveResult | null
+      </signature>
+      <note>Returns MoveResult with move details. After move execution, can access move history via chess.history({ verbose: true }) to detect captured pieces.</note>
+    </interface>
+    <interface name="calculateScoreForPiece" kind="function" path="src/utils/calculateScore.ts">
+      <signature>
+        calculateScoreForPiece(piece: string): number
+      </signature>
+      <note>New utility function to be created. Maps piece types to score values: Pawn: +10, Knight/Bishop: +20, Rook: +40, Queen: +60.</note>
+    </interface>
+    <interface name="ScoreDisplay" kind="component" path="src/components/Board/ScoreDisplay.tsx">
+      <signature>
+        export function ScoreDisplay(): JSX.Element
+      </signature>
+      <note>New component to be created. Reads sessionScore from session store. Displays current score prominently and XP preview: "XP: {floor(score / 10)}". Includes visual feedback for score updates.</note>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Testing approach follows manual testing patterns established in previous stories. No automated test framework currently configured. Test score calculation logic, session store actions, component rendering, and visual feedback manually. Verify no console errors or warnings during development. Testing should cover all acceptance criteria including edge cases (no captures, multiple captures, match reset).</standards>
+    <locations>
+      <location>Manual testing in browser during development</location>
+      <location>Console verification (no errors/warnings)</location>
+      <location>Visual inspection of score display and animations</location>
+      <location>Session store state verification via browser dev tools</location>
+    </locations>
+    <ideas>
+      <test id="T1" criterion="AC1">
+        <title>Score Calculation for Each Piece Type</title>
+        <scenario>Test that calculateScoreForPiece returns correct values for each piece type: Pawn returns 10, Knight/Bishop returns 20, Rook returns 40, Queen returns 60.</scenario>
+      </test>
+      <test id="T2" criterion="AC1">
+        <title>Score Update After Capture</title>
+        <scenario>Make a move that captures an opponent's piece. Verify that sessionScore in session store increments by correct amount. Verify score display updates immediately.</scenario>
+      </test>
+      <test id="T3" criterion="AC1, AC3">
+        <title>Score Display Real-Time Updates</title>
+        <scenario>Capture multiple pieces in sequence. Verify that score display updates immediately after each capture without page refresh. Verify XP preview recalculates correctly.</scenario>
+      </test>
+      <test id="T4" criterion="AC1">
+        <title>Visual Feedback on Score Update</title>
+        <scenario>Capture a piece and verify that score number animates or highlights briefly when score increases. Verify animation doesn't block UI or cause performance issues.</scenario>
+      </test>
+      <test id="T5" criterion="AC2">
+        <title>Score Not Persisted to localStorage</title>
+        <scenario>During a match, capture pieces and accumulate score. Check localStorage and verify that sessionScore is NOT stored there. Score should only exist in session store memory.</scenario>
+      </test>
+      <test id="T6" criterion="AC2">
+        <title>Score Reset on Match Start</title>
+        <scenario>Start a match, capture some pieces, then start a new match. Verify that score resets to 0 when new match starts. Verify score persists during match (doesn't reset during match).</scenario>
+      </test>
+      <test id="T7" criterion="AC1">
+        <title>AI Captures Don't Add to User Score</title>
+        <scenario>Play a match where AI captures user pieces. Verify that user score does NOT increase when AI captures user pieces. Only user captures should add to score.</scenario>
+      </test>
+      <test id="T8" criterion="AC3">
+        <title>XP Preview Calculation</title>
+        <scenario>Capture pieces and accumulate score. Verify XP preview displays as "XP: {floor(score / 10)}" and updates correctly. Test edge cases: score 0 (XP: 0), score 15 (XP: 1), score 25 (XP: 2).</scenario>
+      </test>
+      <test id="T9" criterion="AC1, AC3">
+        <title>Score Display Component Integration</title>
+        <scenario>Verify ScoreDisplay component is added to Play page layout. Verify component is positioned appropriately (sidebar or below chess board). Verify component updates reactively to session store changes.</scenario>
+      </test>
+      <test id="T10" criterion="All">
+        <title>No Console Errors or Warnings</title>
+        <scenario>Perform all score-related actions (captures, score updates, visual feedback). Verify browser console shows no errors or warnings related to score tracking system.</scenario>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

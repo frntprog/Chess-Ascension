@@ -59,6 +59,15 @@ export interface SessionState {
   
   /** Action: Set current turn (optional, for UI display) */
   setCurrentTurn: (turn: 'white' | 'black') => void;
+  
+  /** Action: Set session score directly */
+  setSessionScore: (score: number) => void;
+  
+  /** Action: Increment session score by points */
+  incrementSessionScore: (points: number) => void;
+  
+  /** Action: Reset session score to 0 */
+  resetSessionScore: () => void;
 }
 
 /**
@@ -94,5 +103,8 @@ export const useSessionStore = create<SessionState>()((set) => ({
   setBoardState: (boardState: string) => set({ boardState }),
   setGameStatus: (status: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw') => set({ gameStatus: status }),
   setCurrentTurn: (turn: 'white' | 'black') => set({ currentTurn: turn }),
+  setSessionScore: (score: number) => set({ sessionScore: score }),
+  incrementSessionScore: (points: number) => set((state) => ({ sessionScore: state.sessionScore + points })),
+  resetSessionScore: () => set({ sessionScore: 0 }),
 }));
 

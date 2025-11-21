@@ -211,6 +211,14 @@ export class ChessEngine {
       return [];
     }
   }
+
+  /**
+   * Get move history with verbose information
+   * @returns Array of move objects with detailed information including captured pieces
+   */
+  history(): Move[] {
+    return this.chess.history({ verbose: true });
+  }
 }
 
 /**

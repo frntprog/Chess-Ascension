@@ -24,6 +24,7 @@ import { getBestMove, getDepthForDifficulty, terminateWorker } from '@/core/ches
 import { loadStockfishWorker } from '@/core/chess/stockfishLoader';
 import { Badge } from '@/components/UI/badge';
 import { Loader2 } from 'lucide-react';
+import { calculateScoreForPiece } from '@/utils/calculateScore';
 
 // Standard chess starting position (FEN)
 const STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -34,7 +35,9 @@ export function ChessBoard() {
     setBoardState, 
     setGameStatus, 
     setCurrentTurn,
-    difficulty
+    difficulty,
+    incrementSessionScore,
+    resetSessionScore
   } = useSessionStore();
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
   const [availableMoves, setAvailableMoves] = useState<string[]>([]);
@@ -56,8 +59,9 @@ export function ChessBoard() {
     // If boardState exists, sync engine with it
     if (boardState && boardState !== STARTING_FEN) {
       chessEngineRef.current.loadFEN(boardState);
-    } else if (!boardState) {
-      // Initialize session store with starting position
+    } else if (!boardState || boardState === STARTING_FEN) {
+      // New match starting - reset score and initialize session store with starting position
+      resetSessionScore();
       setBoardState(STARTING_FEN);
     }
 
@@ -158,6 +162,15 @@ export function ChessBoard() {
       return false;
     }
 
+    // Check if piece was captured (user captures add to score)
+    if (moveResult.move?.captured) {
+      const capturedPiece = moveResult.move.captured;
+      const points = calculateScoreForPiece(capturedPiece);
+      if (points > 0) {
+        incrementSessionScore(points);
+      }
+    }
+
     // Update session store with new FEN after animation frame
     // This allows react-chessboard to animate the move before position prop updates
     requestAnimationFrame(() => {
@@ -235,6 +248,9 @@ export function ChessBoard() {
         setIsAIThinking(false);
         return;
       }
+
+      // Note: AI captures don't add to user score (only user captures count)
+      // No score update needed for AI moves
 
       // Update session store with new FEN immediately for AI moves
       // AI moves don't need animation delay since they're programmatic

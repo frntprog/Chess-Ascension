@@ -62,8 +62,8 @@ development_status:
   3-4-chess-board-display-with-react-chessboard: done  # Approved after code review, React 19 upgrade performed
   3-5-chess-move-validation-with-chess-js: done  # Approved after code review
   3-6-stockfish-ai-integration-with-web-worker: done  # Approved after code review - All issues resolved and verified
-  3-7-session-score-tracking-system: backlog
-  3-8-optional-combo-bonus-system: backlog
+  3-7-session-score-tracking-system: done  # Approved after code review
+  3-8-optional-combo-bonus-system: drafted
   3-9-match-end-detection-and-result: backlog
   3-10-game-board-page-layout-with-score-display: backlog
   epic-3-retrospective: optional
