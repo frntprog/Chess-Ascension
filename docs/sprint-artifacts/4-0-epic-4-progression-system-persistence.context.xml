@@ -1,0 +1,242 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.0</storyId>
+    <title>Epic 4 - Progression System & Persistence</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/4-0-epic-4-progression-system-persistence.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want my progression data (XP, level, rank, unlocks, stats) to be calculated, persisted, and displayed</iWant>
+    <soThat>So that I can track my progress, unlock new content, and see my achievements persist across sessions</soThat>
+    <tasks>
+      <task id="1" ac="AC1">Create `/src/utils/calculateXP.ts` - Implement `calculateXP(score: number): number` function with formula: `Math.floor(score / 10)`</task>
+      <task id="2" ac="AC1">Create `/src/utils/calculateLevel.ts` - Implement `calculateLevel(totalXP: number): number` function with XP thresholds: 100 XP per level (Level 1: 0-99, Level 2: 100-199, etc.)</task>
+      <task id="3" ac="AC1">Create `/src/utils/rankMapping.ts` - Implement `getRankFromLevel(level: number): string` function with mapping: Level 1-2: "Pawn", Level 3-4: "Knight", Level 5-6: "Bishop", Level 7-8: "Rook", Level 9-10: "Queen"</task>
+      <task id="4" ac="AC3">Create `/src/utils/skinUnlocks.ts` - Define skin unlock mappings and implement `getSkinsUnlockedAtLevel(level: number): string[]` function</task>
+      <task id="5" ac="AC4">Create `/src/utils/abilityUnlocks.ts` - Define ability unlock mappings and implement `getAbilitiesUnlockedAtLevel(level: number): string[]` function</task>
+      <task id="6" ac="AC1,AC2">Update `/src/stores/profileStore.ts` - Add `addXP(xp: number): void`, `updateLevelAndRank(): void`, `incrementGamesPlayed(): void`, `updateBestScore(score: number): void`, `incrementWins(): void`, `incrementLosses(): void` actions</task>
+      <task id="7" ac="AC1,AC2">Create `/src/utils/matchEndProcessor.ts` or update `/src/pages/Play.tsx` - Create `processMatchEnd(score: number, result: 'win' | 'loss' | 'draw'): void` function to handle XP calculation, level-up detection, and unlock detection</task>
+      <task id="8" ac="AC2">Update match end handler in `/src/pages/Play.tsx` - After XP processing, update localStorage profile using `saveProfile()` from profileStorage, handle errors</task>
+      <task id="9" ac="AC3">Integrate skin unlock detection in match end processing - After level calculation, call `getSkinsUnlockedAtLevel(newLevel)`, compare with current `unlockedSkins`, add new skins</task>
+      <task id="10" ac="AC4">Integrate ability unlock detection in match end processing - After level calculation, call `getAbilitiesUnlockedAtLevel(newLevel)`, compare with current `unlockedAbilities`, add new abilities</task>
+      <task id="11" ac="AC5">Create `/src/components/LevelUpModal.tsx` - Use shadcn/ui Dialog component, display level-up message, list unlocks (skins, abilities, rank change), "Continue" button</task>
+      <task id="12" ac="AC3,AC4">Install shadcn/ui toast component (if not already installed) and create helper functions in `/src/utils/toastNotifications.ts` for unlock notifications (optional, can be handled by LevelUpModal)</task>
+      <task id="13" ac="AC5">Integrate LevelUpModal into match flow in `/src/pages/Play.tsx` - Add state for level-up modal, show modal when leveled up, handle modal close</task>
+      <task id="14" ac="AC1">Create unit tests for `calculateXP()` function - Test edge cases: 0, 9, 10, 99, 100</task>
+      <task id="15" ac="AC1">Create unit tests for `calculateLevel()` function - Test level boundaries: 0, 99, 100, 199, 200, 900</task>
+      <task id="16" ac="AC1">Create unit tests for `getRankFromLevel()` function - Test rank mappings for levels 1, 2, 3, 5, 7, 9, 10</task>
+      <task id="17" ac="AC3">Create unit tests for `getSkinsUnlockedAtLevel()` function - Test unlocks at levels 1, 3, 5, 7</task>
+      <task id="18" ac="AC4">Create unit tests for `getAbilitiesUnlockedAtLevel()` function - Test unlocks at levels 4, 5</task>
+      <task id="19" ac="AC1,AC2">Test profile store actions - Test `addXP()`, `incrementGamesPlayed()`, `updateBestScore()` actions</task>
+      <task id="20" ac="AC1-AC5">Integration testing - Test full match end flow: score → XP → level → unlocks → localStorage update → modal display</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1" title="XP Calculation and Level System">
+      **Given** a match ends with a final score
+      **When** XP is calculated
+      **Then** XP conversion works:
+      - XP = floor(score / 10) (from session score)
+      - XP is added to user's total XP in profile store
+      - Level is recalculated based on total XP:
+        - Level 1: 0-99 XP
+        - Level 2: 100-199 XP
+        - Level 3: 200-299 XP
+        - Level 4: 300-399 XP
+        - Level 5: 400-499 XP
+        - Level 6: 500-599 XP
+        - Level 7: 600-699 XP
+        - Level 8: 700-799 XP
+        - Level 9: 800-899 XP
+        - Level 10: 900+ XP (and beyond, progressive thresholds)
+      
+      **And** when user levels up:
+      - Level increases in profile store
+      - Rank is recalculated from level:
+        - Level 1-2: "Pawn"
+        - Level 3-4: "Knight"
+        - Level 5-6: "Bishop"
+        - Level 7-8: "Rook"
+        - Level 9-10: "Queen"
+      - Level change is detected and stored
+    </criterion>
+    <criterion id="AC2" title="localStorage Profile Update After Match">
+      **Given** a match ends and XP/level are calculated
+      **When** profile data needs to be updated
+      **Then** localStorage profile is updated:
+      - Profile in localStorage (key: `chessAscensionProfile`) is updated with:
+        - `xp`: Updated total XP
+        - `level`: Updated level
+        - `rank`: Updated rank
+        - `gamesPlayed`: Incremented by 1
+        - `bestScore`: Updated if current score > bestScore
+        - `wins`: Incremented if user won
+        - `losses`: Incremented if user lost
+      - Update is written to localStorage via profileStorage utility
+      - Profile store is synced with localStorage data
+      
+      **And** update happens after match end:
+      - Single write per match (no writes during match)
+      - Update is synchronous (localStorage write is immediate)
+      - Loading state shown while update is in progress (if needed)
+      - Error handling: If update fails (e.g., localStorage quota exceeded), show error message, allow retry
+    </criterion>
+    <criterion id="AC3" title="Skin Unlock System Based on Level">
+      **Given** a user levels up to specific thresholds
+      **When** level unlocks are detected
+      **Then** skins are unlocked:
+      - Level 1: "Classic" skin unlocked (initial)
+      - Level 3: "Monochrome" skin unlocked
+      - Level 5: "Neon" skin unlocked
+      - Level 7: "Gold" skin unlocked
+      - Unlocked skins are added to `unlockedSkins` array in profile
+      - Unlock notification shown (toast: "New skin unlocked: {skinName}!")
+      
+      **And** when skin is unlocked:
+      - Skin is added to localStorage profile `unlockedSkins` array (if not already present)
+      - Profile store is updated
+      - Profile is saved to localStorage via profileStorage utility
+      - Skin can be selected in profile settings (future story)
+    </criterion>
+    <criterion id="AC4" title="Ability Unlock System Based on Level">
+      **Given** a user levels up to specific thresholds
+      **When** ability unlocks are detected
+      **Then** abilities are unlocked:
+      - Shield ability unlocks at Level 5
+      - Unlocked abilities are added to `unlockedAbilities` array in profile
+      - Unlock notification shown (toast: "New ability unlocked: Shield!")
+      
+      **And** when ability is unlocked:
+      - Ability is added to localStorage profile `unlockedAbilities` array (if not already present)
+      - Profile store is updated
+      - Profile is saved to localStorage via profileStorage utility
+      - Ability becomes available in RPG Mode (future story)
+    </criterion>
+    <criterion id="AC5" title="Level-Up Notification with Unlocks">
+      **Given** a user levels up
+      **When** level-up is detected
+      **Then** level-up notification is displayed:
+      - Modal or toast notification (shadcn/ui Dialog or toast)
+      - Shows: "Level Up! You're now Level {level}!"
+      - Lists any unlocks:
+        - New skins unlocked
+        - New abilities unlocked
+        - Rank change (if applicable)
+      - "Continue" button to dismiss
+      
+      **And** notification is shown:
+      - After match ends and XP is calculated
+      - Before or after match result modal
+      - Can be combined with match result modal or shown sequentially
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Section 7: Progression System (Persistent in localStorage)">
+        XP conversion: `XP = floor(score / 10)`. Level increases based on accumulated XP. Rank mapping: Level 1-2 → Pawn, Level 3-4 → Knight, Level 5-6 → Bishop, Level 7-8 → Rook, Level 9-10 → Queen. Skin unlocks by level: Level 1: Classic, Level 3: Monochrome, Level 5: Neon, Level 7: Gold. Abilities unlock at certain levels (e.g., Shield at Level 5).
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Section 8: Data Model (localStorage)">
+        Storage key: `chessAscensionProfile`. Profile object includes: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Section 3: Profile Layer (Zustand + localStorage)">
+        Profile store manages: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats. Profile store syncs with localStorage via profileStorage utility. Profile updates happen AFTER match end (single write per match).
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Section 4: Data Flow - Match End">
+        Session store calculates XP = floor(score / 10). Profile store updates: xp (accumulated), level (recomputed from accumulated XP), rank (from level mapping), bestScore (if improved), stats (gamesPlayed, results). Profile store syncs with localStorage (single write). Session store resets to default.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Section 6: localStorage Structure">
+        Storage key: `chess-ascension-profile`. Profile data structure matches PRD section 8. Initial profile values: xp: 0, level: 1, rank: "Pawn", unlockedSkins: ["Classic"], selectedSkin: "Classic", unlockedAbilities: [], bestScore: 0, gamesPlayed: 0, wins: 0, losses: 0.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 4: Progression System & Persistence">
+        Epic goal: Enable users to earn XP, level up, unlock content, and persist their progression data to localStorage. Covers Stories 4.1-4.5: XP calculation and level system, localStorage profile update, skin unlock system, ability unlock system, level-up notification with unlocks.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Section 7.3: Modal Patterns">
+        Modal size variants: Medium (max-width 600px) for match results, forms (default). Dismiss behavior: Click outside closes modal, ESC key always closes, X button top-right, Cancel button explicit cancel. Focus management: Auto-focus first input or primary button, trap focus within modal, restore focus to trigger element on close.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/stores/profileStore.ts" kind="store" symbol="useProfileStore" reason="Profile state management - needs XP/level/rank update actions (addXP, incrementGamesPlayed, updateBestScore, incrementWins, incrementLosses)">
+        Profile store interface matches Architecture section 3. Current state: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats. Actions: updateProfile, resetProfile. Needs new actions for progression system.
+      </artifact>
+      <artifact path="src/services/profileStorage.ts" kind="service" symbol="saveProfile, loadProfile" reason="localStorage profile operations - used to persist profile updates after match end">
+        Provides localStorage abstraction: saveProfile(profile: Profile): void, loadProfile(): Profile | null. Storage key: `chessAscensionProfile`. Error handling for QuotaExceededError, SecurityError, ReferenceError.
+      </artifact>
+      <artifact path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore" reason="Session score and match state - provides sessionScore for XP calculation at match end">
+        Session store manages: sessionScore, gameStatus, currentTurn. Session score incremented via incrementSessionScore(points: number). Game status: 'normal' | 'check' | 'checkmate' | 'stalemate' | 'draw'. Match end detected when gameStatus becomes 'checkmate' | 'stalemate' | 'draw'.
+      </artifact>
+      <artifact path="src/pages/Play.tsx" kind="page" symbol="Play" reason="Game board page - needs match end XP processing integration and level-up modal">
+        Main game board page. Watches gameStatus changes to trigger MatchResultModal. Handles match end flow. Needs integration: XP processing after match end, level-up modal display, localStorage profile update.
+      </artifact>
+      <artifact path="src/components/Board/MatchResultModal.tsx" kind="component" symbol="MatchResultModal" reason="Match result modal - shows final score and XP gained, integration point for level-up modal">
+        Displays match result (Win/Loss/Draw) with final score and XP gained. Uses shadcn/ui Dialog component. XP calculation: Math.floor(sessionScore / 10). Level-up modal should show before or after this modal.
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="typescript" version="^5.5.3" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Profile store never writes directly to localStorage - always use profileStorage utility (Architecture section 3)</constraint>
+    <constraint>Profile updates happen AFTER match end (single write per match) - no writes during match (Architecture section 4)</constraint>
+    <constraint>XP calculation: XP = floor(score / 10) - must match PRD section 7 exactly</constraint>
+    <constraint>Level calculation: 100 XP per level (Level 1: 0-99, Level 2: 100-199, etc.) - must match story acceptance criteria</constraint>
+    <constraint>Rank mapping: Level 1-2: "Pawn", Level 3-4: "Knight", Level 5-6: "Bishop", Level 7-8: "Rook", Level 9-10: "Queen" - must match PRD section 7</constraint>
+    <constraint>Skin unlocks: Level 1: "Classic", Level 3: "Monochrome", Level 5: "Neon", Level 7: "Gold" - must match PRD section 5.2</constraint>
+    <constraint>Ability unlocks: Shield unlocks at Level 5 - must match PRD section 5.2</constraint>
+    <constraint>localStorage key: `chessAscensionProfile` - must match PRD section 8 and profileStorage.ts constant</constraint>
+    <constraint>Modal size: max-width 600px for LevelUpModal - per UX Design Specification section 7.3</constraint>
+    <constraint>Error handling: Handle localStorage quota exceeded errors gracefully - show error message, allow retry</constraint>
+    <constraint>Level-up modal display: Show after match ends and XP is calculated, before or after MatchResultModal - per story acceptance criteria AC5</constraint>
+    <constraint>File structure: Utils directory (`/src/utils/`) for pure calculation functions - per Architecture section 8</constraint>
+    <constraint>Component structure: Components directory (`/src/components/`) for UI components (LevelUpModal) - per Architecture section 8</constraint>
+    <constraint>Store structure: Stores directory (`/src/stores/`) for Zustand stores (profileStore) - per Architecture section 8</constraint>
+    <constraint>Service structure: Services directory (`/src/services/`) for localStorage operations (profileStorage) - per Architecture section 8</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="ProfileState" kind="TypeScript interface" signature="interface ProfileState { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; bestScore: number; stats: { gamesPlayed: number; wins: number; losses: number; } }" path="src/stores/profileStore.ts" />
+    <interface name="Profile" kind="TypeScript interface" signature="interface Profile { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; gamesPlayed: number; bestScore: number; wins: number; losses: number; }" path="src/services/profileStorage.ts" />
+    <interface name="saveProfile" kind="function" signature="saveProfile(profile: Profile): void" path="src/services/profileStorage.ts" />
+    <interface name="loadProfile" kind="function" signature="loadProfile(): Profile | null" path="src/services/profileStorage.ts" />
+    <interface name="useSessionStore" kind="Zustand store" signature="useSessionStore(): SessionState" path="src/stores/sessionStore.ts" />
+    <interface name="useProfileStore" kind="Zustand store" signature="useProfileStore(): ProfileState & ProfileStoreActions" path="src/stores/profileStore.ts" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Unit tests for all utility functions (calculateXP, calculateLevel, rankMapping, unlock utilities). Test XP/level/rank calculations with edge cases (0 XP, level boundaries, etc.). Test profile store actions (addXP, incrementGamesPlayed, etc.). Integration test for full match end flow. Test localStorage updates (mock localStorage if needed). Test level-up detection and unlock detection. Test modal display with different unlock scenarios. Testing frameworks: Use standard Jest/Vitest patterns if available, or create test files following project conventions.
+    </standards>
+    <locations>
+      Test files should be created alongside source files: `/src/utils/__tests__/calculateXP.test.ts`, `/src/utils/__tests__/calculateLevel.test.ts`, `/src/utils/__tests__/rankMapping.test.ts`, `/src/utils/__tests__/skinUnlocks.test.ts`, `/src/utils/__tests__/abilityUnlocks.test.ts`, `/src/stores/__tests__/profileStore.test.ts` (if test structure exists).
+    </locations>
+    <ideas>
+      <test ac="AC1">Test calculateXP: 0 → 0, 9 → 0 (floor), 10 → 1, 99 → 9, 100 → 10</test>
+      <test ac="AC1">Test calculateLevel: 0 → 1, 99 → 1, 100 → 2, 199 → 2, 200 → 3, 900 → 10</test>
+      <test ac="AC1">Test getRankFromLevel: 1 → "Pawn", 2 → "Pawn", 3 → "Knight", 5 → "Bishop", 7 → "Rook", 9 → "Queen", 10 → "Queen"</test>
+      <test ac="AC3">Test getSkinsUnlockedAtLevel: Level 1 → ["Classic"], Level 3 → ["Classic", "Monochrome"], Level 5 → ["Classic", "Monochrome", "Neon"], Level 7 → all skins</test>
+      <test ac="AC4">Test getAbilitiesUnlockedAtLevel: Level 4 → [], Level 5 → ["Shield"]</test>
+      <test ac="AC1,AC2">Test profile store addXP: XP addition updates total, level recalculates correctly, rank recalculates correctly</test>
+      <test ac="AC2">Test profile store incrementGamesPlayed: Increments by 1</test>
+      <test ac="AC2">Test profile store updateBestScore: Only updates if score > bestScore</test>
+      <test ac="AC1-AC5">Integration test: Match ends with score 150 → XP calculated (15 XP) → Level recalculates → Profile updates in store → localStorage updates correctly → Level-up detected when crossing threshold (e.g., 99 XP → 100 XP) → Unlocks detected (skin at Level 3, ability at Level 5) → Level-up modal shows with correct data → Profile persists after page reload</test>
+    </ideas>
+  </tests>
+</story-context>
+

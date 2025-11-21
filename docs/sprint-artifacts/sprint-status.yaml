@@ -70,11 +70,12 @@ development_status:
 
   # Epic 4: Progression System & Persistence
   epic-4: backlog
-  4-1-xp-calculation-and-level-system: backlog
-  4-2-localstorage-profile-update-after-match: backlog
-  4-3-skin-unlock-system-based-on-level: backlog
-  4-4-ability-unlock-system-based-on-level: backlog
-  4-5-level-up-notification-with-unlocks: backlog
+  4-0-epic-4-progression-system-persistence: done  # Epic-level story covering all Epic 4 sub-stories (4.1-4.5) - Implementation completed 2025-01-27, Approved after code review 2025-01-27
+  4-1-xp-calculation-and-level-system: backlog  # Covered by 4-0
+  4-2-localstorage-profile-update-after-match: backlog  # Covered by 4-0
+  4-3-skin-unlock-system-based-on-level: backlog  # Covered by 4-0
+  4-4-ability-unlock-system-based-on-level: backlog  # Covered by 4-0
+  4-5-level-up-notification-with-unlocks: backlog  # Covered by 4-0
   epic-4-retrospective: optional
 
   # Epic 5: RPG Mode & Abilities
