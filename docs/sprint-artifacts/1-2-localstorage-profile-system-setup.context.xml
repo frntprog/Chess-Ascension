@@ -1,0 +1,273 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.2</storyId>
+    <title>localStorage Profile System Setup</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-2-localstorage-profile-system-setup.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer</asA>
+    <iWant>I want localStorage profile utilities set up</iWant>
+    <soThat>So that user profile data can be persisted client-side without backend dependencies</soThat>
+    <tasks>
+      <task id="1" ac="1">
+        <title>Create Profile Storage Utility File</title>
+        <subtasks>
+          <subtask>Create `/src/services/profileStorage.ts` file</subtask>
+          <subtask>Define TypeScript `Profile` interface matching PRD section 8 data model</subtask>
+          <subtask>Define storage key constant: `CHESS_ASCENSION_PROFILE_KEY = 'chessAscensionProfile'`</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="1,2">
+        <title>Implement saveProfile Function</title>
+        <subtasks>
+          <subtask>Implement `saveProfile(profile: Profile): void` function</subtask>
+          <subtask>Serialize profile object to JSON string using `JSON.stringify()`</subtask>
+          <subtask>Save to localStorage using `localStorage.setItem(CHESS_ASCENSION_PROFILE_KEY, jsonString)`</subtask>
+          <subtask>Handle localStorage quota exceeded errors (throw error with message)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="1,2,3">
+        <title>Implement loadProfile Function</title>
+        <subtasks>
+          <subtask>Implement `loadProfile(): Profile | null` function</subtask>
+          <subtask>Retrieve JSON string from localStorage using `localStorage.getItem(CHESS_ASCENSION_PROFILE_KEY)`</subtask>
+          <subtask>Parse JSON string using `JSON.parse()` with try-catch</subtask>
+          <subtask>Return parsed Profile object if valid, return null if not found or corrupted</subtask>
+          <subtask>Handle JSON parse errors gracefully (return null, don't throw)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="1">
+        <title>Implement clearProfile Function</title>
+        <subtasks>
+          <subtask>Implement `clearProfile(): void` function</subtask>
+          <subtask>Remove profile from localStorage using `localStorage.removeItem(CHESS_ASCENSION_PROFILE_KEY)`</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="1,3">
+        <title>Implement profileExists Function</title>
+        <subtasks>
+          <subtask>Implement `profileExists(): boolean` function</subtask>
+          <subtask>Check if localStorage key exists and contains valid JSON</subtask>
+          <subtask>Return true if valid profile exists, false otherwise</subtask>
+          <subtask>Handle JSON parse errors (return false if corrupted)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="3">
+        <title>Verify Profile Utilities</title>
+        <subtasks>
+          <subtask>Test save/load cycle: Save test profile, reload page, verify profile loads</subtask>
+          <subtask>Test error handling: Test with corrupted JSON data, verify graceful handling</subtask>
+          <subtask>Test persistence: Save profile, close browser, reopen, verify profile persists</subtask>
+          <subtask>Verify utilities can be imported and used without errors</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <title>Profile Storage Utility Creation</title>
+      <given>localStorage utilities are created</given>
+      <when>the profile system is initialized</when>
+      <then>
+        <item>Profile storage utility at `/src/services/profileStorage.ts`</item>
+        <item>Functions for: `saveProfile(profile: Profile): void`, `loadProfile(): Profile | null`, `clearProfile(): void`, `profileExists(): boolean`</item>
+      </then>
+    </criterion>
+    <criterion id="AC2">
+      <title>Profile Data Structure</title>
+      <given>profile utilities are created</given>
+      <when>profile data is stored</when>
+      <then>
+        <item>Profile data structure matches PRD section 8 (localStorage data model)</item>
+        <item>Storage key: `chessAscensionProfile`</item>
+        <item>JSON serialization/deserialization handling</item>
+      </then>
+    </criterion>
+    <criterion id="AC3">
+      <title>Profile Utilities Functionality</title>
+      <given>profile utilities are implemented</given>
+      <when>utilities are used</when>
+      <then>
+        <item>Profile utilities work without errors</item>
+        <item>Profile data persists across page reloads</item>
+        <item>Profile utilities can be imported and used</item>
+        <item>JSON parse errors are handled gracefully (return null if invalid)</item>
+      </then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Data Model (localStorage) - Section 8</section>
+        <snippet>Storage Key: `chessAscensionProfile`. Profile Object includes: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses. Stored as JSON string in localStorage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>localStorage Structure - Section 6</section>
+        <snippet>Storage Key: `chess-ascension-profile` (note: PRD uses `chessAscensionProfile`). Profile data structure with TypeScript interface definition. Initial profile state documented. Migration path to Firebase preserved.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Component Responsibilities - Section 3</section>
+        <snippet>Persistence Layer (localStorage): Profile storage abstraction. Profile Layer (Zustand + localStorage): Reads from localStorage on app load, writes updates after match end. Architecture designed with abstraction layer to allow Firebase integration later.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>File & Folder Structure - Section 8</section>
+        <snippet>Service layer location: `/src/services/profileStorage.ts` (or `localStorageApi.ts` per architecture). Service layer pattern enables clean separation of concerns and future Firebase migration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification</title>
+        <section>APIs and Interfaces - profileStorage Service API</section>
+        <snippet>Function signatures: `saveProfile(profile: Profile): void`, `loadProfile(): Profile | null`, `clearProfile(): void`, `profileExists(): boolean`. Error handling: JSON parse errors return null/false, localStorage quota exceeded throws error.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification</title>
+        <section>Data Models and Contracts - Profile Data Model</section>
+        <snippet>TypeScript interface definition for Profile with all fields. Storage key: `chessAscensionProfile`. Initial profile state documented. Storage format: JSON string in localStorage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 1.2: localStorage Profile System Setup</section>
+        <snippet>Acceptance criteria, technical notes, prerequisites. Profile structure: `{ nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses }`. Storage key: `chessAscensionProfile` per PRD section 8.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/services</path>
+        <kind>directory</kind>
+        <symbol>services directory</symbol>
+        <lines>N/A</lines>
+        <reason>Directory exists from Story 1.1. Profile storage utility will be created here at `/src/services/profileStorage.ts`.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react">^18.3.1</package>
+        <package name="react-dom">^18.3.1</package>
+        <package name="react-router-dom">^6.30.2</package>
+        <package name="typescript">^5.5.3</package>
+        <package name="vite">^5.3.4</package>
+      </ecosystem>
+      <ecosystem name="browser">
+        <package name="localStorage">Native API</package>
+        <package name="JSON">Native API</package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Architecture Pattern</category>
+      <description>Profile storage utility abstracts localStorage operations, enabling future Firebase integration without refactoring. Service layer pattern for clean separation of concerns.</description>
+    </constraint>
+    <constraint>
+      <category>Storage Key</category>
+      <description>Storage key must be `chessAscensionProfile` per PRD section 8. Note: Architecture doc mentions `chess-ascension-profile` but PRD is authoritative.</description>
+    </constraint>
+    <constraint>
+      <category>Error Handling</category>
+      <description>JSON parse errors: Return `null` for `loadProfile()`, return `false` for `profileExists()` (graceful degradation). localStorage quota exceeded: Throw error with message, allow retry. localStorage unavailable: Throw error with message.</description>
+    </constraint>
+    <constraint>
+      <category>Data Structure</category>
+      <description>Profile structure must match PRD section 8 exactly: `{ nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses }`. TypeScript interface must be defined.</description>
+    </constraint>
+    <constraint>
+      <category>TypeScript</category>
+      <description>TypeScript strict mode enabled. All functions must have proper type annotations. Profile interface must be exported for use in other modules.</description>
+    </constraint>
+    <constraint>
+      <category>File Location</category>
+      <description>Profile storage utility must be at `/src/services/profileStorage.ts` per Architecture section 8 and story acceptance criteria.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>Profile</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface Profile {
+  nickname: string;
+  xp: number;
+  level: number;
+  rank: string;
+  unlockedSkins: string[];
+  selectedSkin: string;
+  unlockedAbilities: string[];
+  gamesPlayed: number;
+  bestScore: number;
+  wins: number;
+  losses: number;
+}</signature>
+      <path>src/services/profileStorage.ts</path>
+    </interface>
+    <interface>
+      <name>saveProfile</name>
+      <kind>function</kind>
+      <signature>function saveProfile(profile: Profile): void</signature>
+      <path>src/services/profileStorage.ts</path>
+    </interface>
+    <interface>
+      <name>loadProfile</name>
+      <kind>function</kind>
+      <signature>function loadProfile(): Profile | null</signature>
+      <path>src/services/profileStorage.ts</path>
+    </interface>
+    <interface>
+      <name>clearProfile</name>
+      <kind>function</kind>
+      <signature>function clearProfile(): void</signature>
+      <path>src/services/profileStorage.ts</path>
+    </interface>
+    <interface>
+      <name>profileExists</name>
+      <kind>function</kind>
+      <signature>function profileExists(): boolean</signature>
+      <path>src/services/profileStorage.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Manual testing approach for Epic 1. Test profile save/load cycle, error handling, persistence across reloads. TypeScript compilation serves as compile-time testing. No automated test framework required for this story, but utilities should be manually verified to work correctly.</standards>
+    <locations>Manual testing in browser DevTools. No test files required for Epic 1, but test scenarios should be verified manually: save profile, reload page, verify profile loads; test with corrupted JSON data; verify persistence across browser sessions.</locations>
+    <ideas>
+      <test ac="AC1">
+        <title>Verify Profile Storage Utility Creation</title>
+        <description>Verify `/src/services/profileStorage.ts` file exists with all four required functions: saveProfile, loadProfile, clearProfile, profileExists.</description>
+      </test>
+      <test ac="AC2">
+        <title>Verify Profile Data Structure</title>
+        <description>Verify Profile TypeScript interface matches PRD section 8 structure. Verify storage key is `chessAscensionProfile`. Test JSON serialization/deserialization.</description>
+      </test>
+      <test ac="AC3">
+        <title>Test Profile Utilities Functionality</title>
+        <description>Test save/load cycle: Save test profile, reload page, verify profile loads. Test error handling: Test with corrupted JSON data, verify graceful handling (returns null). Test persistence: Save profile, close browser, reopen, verify profile persists.</description>
+      </test>
+      <test ac="AC3">
+        <title>Test Error Handling</title>
+        <description>Test JSON parse errors: Corrupt localStorage data, verify loadProfile returns null and profileExists returns false. Test localStorage quota exceeded: Attempt to save very large profile, verify error is thrown. Test localStorage unavailable: Test in private browsing mode (if applicable).</description>
+      </test>
+      <test ac="AC1,AC3">
+        <title>Test Import and Usage</title>
+        <description>Verify utilities can be imported without errors. Create test file that imports and calls all functions, verify no TypeScript errors and functions execute correctly.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

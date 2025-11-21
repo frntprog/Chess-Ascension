@@ -1,0 +1,123 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Mode Selection Page</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-2-mode-selection-page.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want to select between Classic Mode and RPG Mode</iWant>
+    <soThat>So that I can choose my preferred gameplay experience</soThat>
+    <tasks>
+      <task id="1" ac="1">Create Mode Selection Page Component</task>
+      <task id="2" ac="1">Implement Mode Cards</task>
+      <task id="3" ac="2,3">Implement Navigation Logic</task>
+      <task id="4" ac="1">Implement Back Button</task>
+      <task id="5" ac="1">Styling and Layout</task>
+      <task id="6" ac="All">Testing and Verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>Given a logged-in user navigates to mode selection</given>
+      <when>When the mode selection page loads</when>
+      <then>Then the page displays: Centered card with two mode options (Classic Mode, RPG Mode), Each mode card shows mode name and icon/badge, brief description, "Play" button or clickable card, Selected mode is highlighted (hover state, selected state), "Back" button or link to return to landing page</then>
+    </criterion>
+    <criterion id="AC2">
+      <given>Given user selects Classic Mode</given>
+      <when>When user clicks Classic Mode card/button</when>
+      <then>Then navigate to difficulty selection page (Classic Mode), Mode selection is stored in session state (optional, for future use)</then>
+    </criterion>
+    <criterion id="AC3">
+      <given>Given user selects RPG Mode</given>
+      <when>When user clicks RPG Mode card/button</when>
+      <then>Then navigate to difficulty selection page (RPG Mode), Mode selection is stored in session state (optional, for future use)</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Features - Mode Selection (FR7)" snippet="Mode selection (Classic Mode vs RPG Mode) is a core feature. Users select between Classic Mode (traditional chess) and RPG Mode (chess with abilities, scores, and progression)." />
+      <doc path="docs/architecture.md" title="Architecture Document" section="Routing Layer" snippet="React Router handles client-side routing. Route definitions in routes.ts or App.tsx. Use Link component or useNavigate hook for navigation." />
+      <doc path="docs/architecture.md" title="Architecture Document" section="Session Layer" snippet="Zustand session store manages temporary game state. Mode selection can be stored in session store for future use in game board (optional)." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Design Direction - Spacious & Centered" snippet="Centered content with wide margins, maximum container width 1200px, wide spacing between sections. Perfect for mode selection page layout." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Component Library - DifficultySelector Component" snippet="Card-based selection pattern with hover/selected states. Mode selection page can follow similar pattern to difficulty selector component." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="User Journey Flows - Journey 1" snippet="Mode Selection step: User sees centered card with Classic Mode and RPG Mode options, selects mode, navigates to difficulty selection." />
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 3: Classic Mode Chess Gameplay - Story 3.2" snippet="Mode selection page allows users to choose between Classic Mode and RPG Mode. Prerequisites: Story 2.2 (Load Profile), Story 3.1 (Landing Page)." />
+    </docs>
+    <code>
+      <artifact path="src/pages/Landing.tsx" kind="component" symbol="Landing" lines="1-113" reason="Reference implementation for centered layout, card-based UI, navigation patterns. Mode selection page should follow similar structure." />
+      <artifact path="src/App.tsx" kind="routing" symbol="App" lines="71-84" reason="Route definitions. Need to add /mode-selection route. Uses React Router BrowserRouter, Routes, Route components." />
+      <artifact path="src/app/routes.ts" kind="routing" symbol="routes" lines="1-15" reason="Route definitions file (alternative to App.tsx). Can add mode selection route here." />
+      <artifact path="src/components/UI/card.tsx" kind="component" symbol="Card, CardHeader, CardTitle, CardDescription, CardContent" lines="1-79" reason="shadcn/ui Card component for mode cards. Use Card, CardHeader, CardTitle, CardDescription, CardContent subcomponents." />
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" lines="36-40" reason="shadcn/ui Button component for Play buttons and Back button. Supports variants: primary, secondary, ghost." />
+      <artifact path="src/stores/sessionStore.ts" kind="store" symbol="useSessionStore, SessionState" lines="1-65" reason="Zustand session store. Can optionally store selected mode in session state for future use in game board." />
+      <artifact path="src/stores/profileStore.ts" kind="store" symbol="useProfileStore" lines="1-110" reason="Zustand profile store. Use to check if user has profile (nickname check) for logged-in requirement." />
+      <artifact path="src/components/Navbar.tsx" kind="component" symbol="Navbar" lines="15-181" reason="Navigation bar component. Already integrated in App.tsx. Mode selection page will display below navbar." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-separator" version="^1.1.8" />
+        <package name="@radix-ui/react-slot" version="^1.2.4" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Routing: Use React Router for navigation. Route definitions in App.tsx or routes.ts. Use useNavigate hook for programmatic navigation, Link/NavLink for declarative navigation.</constraint>
+    <constraint>UI Components: Use shadcn/ui Card and Button components. Styling follows Classic Chess theme colors (primary: #1e293b, secondary: #475569, accent: #f59e0b).</constraint>
+    <constraint>Layout: Spacious & Centered approach. Max-width 1200px container, centered content, wide margins. Follow UX Design Specification section 4.1.</constraint>
+    <constraint>Spacing: Use 8px spacing system (Tailwind standard). Apply proper spacing between mode cards (8px system).</constraint>
+    <constraint>Typography: Follow UX Design Specification section 3.2. Headings use system font stack, type scale defined (H1: 2rem, H2: 1.5rem, etc.).</constraint>
+    <constraint>Responsive Design: Desktop-focused (1280px+ minimum). No mobile adaptations required in MVP.</constraint>
+    <constraint>Session State: Mode selection can be stored in Zustand session store (optional). Store mode as 'classic' | 'rpg' in session store for future use in game board.</constraint>
+    <constraint>Profile Check: Use useProfileStore() hook to check profile existence (!!nickname) for logged-in user requirement (optional, per story notes).</constraint>
+    <constraint>Navigation Pattern: Follow pattern from Story 3.1 (Landing page). Use useNavigate for programmatic navigation, conditional navigation based on profile state.</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="React Router Navigation" kind="function hook" signature="useNavigate(): NavigateFunction" path="react-router-dom" />
+    <interface name="React Router Link" kind="component" signature="&lt;Link to={string}&gt;children&lt;/Link&gt;" path="react-router-dom" />
+    <interface name="Zustand Session Store" kind="hook" signature="useSessionStore(): SessionState" path="src/stores/sessionStore.ts" />
+    <interface name="Zustand Profile Store" kind="hook" signature="useProfileStore(): ProfileState" path="src/stores/profileStore.ts" />
+    <interface name="shadcn/ui Card Component" kind="component" signature="&lt;Card&gt;&lt;CardHeader&gt;&lt;CardTitle&gt;...&lt;/CardTitle&gt;&lt;/CardHeader&gt;&lt;CardContent&gt;...&lt;/CardContent&gt;&lt;/Card&gt;" path="src/components/UI/card.tsx" />
+    <interface name="shadcn/ui Button Component" kind="component" signature="&lt;Button variant?={string} onClick?={function}&gt;children&lt;/Button&gt;" path="src/components/UI/button.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should verify mode selection page displays correctly, mode cards render with descriptions and buttons, navigation works for both Classic and RPG modes, back button navigates correctly, hover states work, and Classic Chess theme colors are applied. Use manual testing for desktop (1280px+). No automated test framework specified yet.
+    </standards>
+    <locations>
+      Manual testing: Test in browser at /mode-selection route. Verify layout, navigation, styling, and interactions.
+    </locations>
+    <ideas>
+      <test id="AC1">Test mode selection page displays correctly on desktop (1280px+). Verify centered card layout, two mode cards render, descriptions and buttons visible.</test>
+      <test id="AC1">Test mode cards render with descriptions and buttons. Verify Classic Mode card shows "Classic Mode" name, description, Play button. Verify RPG Mode card shows "RPG Mode" name, description, Play button.</test>
+      <test id="AC1">Test hover states on mode cards. Verify subtle background color change or border highlight on hover.</test>
+      <test id="AC1">Test Classic Chess theme colors applied correctly. Verify white background, subtle borders, primary/secondary/accent colors used appropriately.</test>
+      <test id="AC1">Test centered layout with proper spacing. Verify max-width 1200px container, centered content, 8px spacing between cards.</test>
+      <test id="AC2">Test Classic Mode navigation to difficulty selection page. Click Classic Mode card/button, verify navigation to /difficulty-selection?mode=classic.</test>
+      <test id="AC3">Test RPG Mode navigation to difficulty selection page. Click RPG Mode card/button, verify navigation to /difficulty-selection?mode=rpg.</test>
+      <test id="AC1">Test "Back" button navigates to landing page. Click Back button, verify navigation to / (landing page).</test>
+    </ideas>
+  </tests>
+</story-context>
+

@@ -1,0 +1,88 @@
+# generated: 2025-11-21 12:04
+# project: Chess Ascention
+# project_key: 
+# tracking_system: file-system
+# story_location: "{project-root}/docs/sprint-artifacts"
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic exists in epic file but not contexted
+#   - contexted: Epic tech context created (required before drafting stories)
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - drafted: Story file created in stories folder
+#   - ready-for-dev: Draft approved and story context created
+#   - in-progress: Developer actively working on implementation
+#   - review: Under SM review (via code-review workflow)
+#   - done: Story completed
+#   - deferred: Story intentionally deferred/skipped (will not be picked up by workflows)
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - completed: Retrospective has been done
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epics should be 'contexted' before stories can be 'drafted'
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically drafts next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+
+generated: 2025-11-21 12:04
+project: Chess Ascention
+project_key: 
+tracking_system: file-system
+story_location: "{project-root}/docs/sprint-artifacts"
+
+development_status:
+  # Epic 1: Foundation & Project Setup
+  epic-1: contexted
+  1-1-project-initialization-with-react-vite-typescript: done
+  1-2-localstorage-profile-system-setup: done
+  1-3-shadcn-ui-component-library-setup: done
+  1-4-zustand-state-management-setup: done
+  1-5-deployment-pipeline-firebase-hosting-setup: deferred  # DEFERRED: Will be implemented at end of development per epics.md
+  epic-1-retrospective: optional
+
+  # Epic 2: Local Profile Management
+  epic-2: backlog
+  2-1-create-local-profile-flow: done
+  2-2-load-local-profile-flow: done  # Approved after code review
+  2-3-user-profile-page-display-profile-information: done
+  2-4-navigation-bar-with-auth-state: done  # Approved after re-review, all issues resolved
+  epic-2-retrospective: optional
+
+  # Epic 3: Classic Mode Chess Gameplay
+  epic-3: backlog
+  3-1-landing-page-with-mode-selection: done  # Approved after code review
+  3-2-mode-selection-page: done  # Approved after re-review - All issues resolved
+  3-3-difficulty-selection-component: done  # Approved after code review
+  3-4-chess-board-display-with-react-chessboard: backlog
+  3-5-chess-move-validation-with-chess-js: backlog
+  3-6-stockfish-ai-integration-with-web-worker: backlog
+  3-7-session-score-tracking-system: backlog
+  3-8-optional-combo-bonus-system: backlog
+  3-9-match-end-detection-and-result: backlog
+  3-10-game-board-page-layout-with-score-display: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Progression System & Persistence
+  epic-4: backlog
+  4-1-xp-calculation-and-level-system: backlog
+  4-2-localstorage-profile-update-after-match: backlog
+  4-3-skin-unlock-system-based-on-level: backlog
+  4-4-ability-unlock-system-based-on-level: backlog
+  4-5-level-up-notification-with-unlocks: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: RPG Mode & Abilities
+  epic-5: backlog
+  5-1-rpg-mode-game-board-with-ability-panel: backlog
+  5-2-ability-activation-system: backlog
+  5-3-double-move-ability-implementation: backlog
+  5-4-tactical-hint-ability-implementation: backlog
+  5-5-shield-ability-implementation: backlog
+  5-6-skin-selection-and-application: backlog
+  epic-5-retrospective: optional

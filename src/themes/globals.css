@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Classic Chess Theme Colors */
+    /* Background colors are light, so all foreground text should be dark for proper contrast */
+    --background: 255 255 255; /* #ffffff - White */
+    --foreground: 30 41 59; /* #1e293b - Slate 800 (Text Primary) */
+    
+    --card: 255 255 255; /* #ffffff - White */
+    --card-foreground: 30 41 59; /* #1e293b - Slate 800 */
+    
+    --popover: 255 255 255; /* #ffffff - White */
+    --popover-foreground: 30 41 59; /* #1e293b - Slate 800 */
+    
+    /* Primary: Dark background - use white text for proper contrast */
+    --primary: 30 41 59; /* #1e293b - Slate 800 (dark) */
+    --primary-foreground: 255 255 255; /* #ffffff - White (white text on dark background) */
+    
+    /* Secondary: Medium dark background - use white text for proper contrast */
+    --secondary: 71 85 105; /* #475569 - Slate 600 (medium dark) */
+    --secondary-foreground: 255 255 255; /* #ffffff - White (white text on dark background) */
+    
+    --muted: 248 250 252; /* #f8fafc - Slate 50 (Background Alt) */
+    --muted-foreground: 100 116 139; /* #64748b - Slate 500 (Text Muted - dark for visibility) */
+    
+    --accent: 245 158 11; /* #f59e0b - Amber 500 */
+    --accent-foreground: 30 41 59; /* #1e293b - Slate 800 */
+    
+    /* Destructive: Red background, use dark text for better visibility */
+    --destructive: 239 68 68; /* #ef4444 - Red 500 (Error) */
+    --destructive-foreground: 30 41 59; /* #1e293b - Slate 800 (changed from white - dark text for contrast) */
+    
+    --border: 226 232 240; /* #e2e8f0 - Slate 200 */
+    --input: 226 232 240; /* #e2e8f0 - Slate 200 */
+    --ring: 30 41 59; /* #1e293b - Slate 800 */
+    
+    --radius: 0.5rem;
+    
+    /* Additional Classic Chess Theme Colors */
+    /* All semantic colors use dark text for better visibility on light backgrounds */
+    --success: 16 185 129; /* #10b981 - Green 500 */
+    --success-foreground: 30 41 59; /* #1e293b - Slate 800 (changed from white - dark text for contrast) */
+    
+    --warning: 245 158 11; /* #f59e0b - Amber 500 */
+    --warning-foreground: 30 41 59; /* #1e293b - Slate 800 */
+    
+    --info: 59 130 246; /* #3b82f6 - Blue 500 */
+    --info-foreground: 30 41 59; /* #1e293b - Slate 800 (changed from white - dark text for contrast) */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+

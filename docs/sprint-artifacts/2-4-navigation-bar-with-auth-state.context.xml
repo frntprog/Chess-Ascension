@@ -1,0 +1,197 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>4</storyId>
+    <title>Navigation Bar with Auth State</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-4-navigation-bar-with-auth-state.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want a navigation bar that shows my login status</iWant>
+    <soThat>So that I can easily navigate and access account features</soThat>
+    <tasks>
+- [ ] **Task 1: Create Navigation Bar Component** (AC: 1)
+  - [ ] Create `/src/components/Navbar.tsx` or `/src/components/UI/Navbar.tsx` component
+  - [ ] Import React Router components: `Link`, `NavLink` from `react-router-dom`
+  - [ ] Import shadcn/ui Button component
+  - [ ] Set up component structure with horizontal navbar layout
+  - [ ] Implement responsive design for desktop (1280px+ minimum)
+  - [ ] Apply Classic Chess theme colors (UX Design Specification section 3.1)
+
+- [ ] **Task 2: Implement Navigation Links** (AC: 1)
+  - [ ] Add logo/brand name on the left ("Chess Ascension")
+  - [ ] Add "Home" navigation link (always visible)
+  - [ ] Add "Play" navigation link (always visible)
+  - [ ] Add "Profile" navigation link (conditional - only if profile exists)
+  - [ ] Implement active state indication using `NavLink` with activeClassName or activeStyle
+  - [ ] Style active links with primary color (#1e293b) per UX Design Specification section 7.4
+
+- [ ] **Task 3: Implement Profile State Display** (AC: 2)
+  - [ ] Import `useProfileStore` from `/src/stores/profileStore.ts`
+  - [ ] Check profile store for profile existence (nickname check)
+  - [ ] Display user nickname when profile exists
+  - [ ] Create dropdown menu component (shadcn/ui DropdownMenu or custom)
+  - [ ] Add "Profile" option to dropdown (navigates to `/profile`)
+  - [ ] Add "Clear Profile" option to dropdown (optional, clears localStorage)
+  - [ ] Implement dropdown toggle functionality
+
+- [ ] **Task 4: Implement No Profile State Display** (AC: 3)
+  - [ ] Check if profile doesn't exist (no nickname in profile store)
+  - [ ] Display "Create Profile" button when no profile
+  - [ ] Button navigates to `/create-profile` route
+  - [ ] Style button with primary action styling (shadcn/ui Button)
+
+- [ ] **Task 5: Integrate Navbar into App Layout** (AC: 1, 2, 3)
+  - [ ] Import Navbar component into `App.tsx` or main layout component
+  - [ ] Add Navbar above Routes in App component
+  - [ ] Ensure Navbar is visible on all pages
+  - [ ] Test navigation links work correctly
+  - [ ] Verify profile state updates reflect in Navbar (reactive to store changes)
+
+- [ ] **Task 6: Implement Clear Profile Functionality** (AC: 2)
+  - [ ] Import `clearProfile` from `/src/services/profileStorage.ts`
+  - [ ] Import `useProfileStore` and access `resetProfile` action
+  - [ ] Implement clear profile handler:
+    - Call `clearProfile()` to remove from localStorage
+    - Call `resetProfile()` to reset Zustand store
+    - Navigate to home or create profile page
+    - Show confirmation dialog or toast notification (optional)
+  - [ ] Add confirmation before clearing (prevent accidental deletion)
+
+- [ ] **Task 7: Styling and Layout** (AC: 1)
+  - [ ] Style navbar with horizontal layout (top navbar)
+  - [ ] Apply Classic Chess theme colors (UX Design Specification section 3.1)
+  - [ ] Style logo/brand name (left side)
+  - [ ] Style navigation links with proper spacing
+  - [ ] Style active link state (underline or background color change)
+  - [ ] Style dropdown menu (if using shadcn/ui DropdownMenu)
+  - [ ] Ensure responsive design (desktop 1280px+ minimum)
+  - [ ] Follow UX Design Specification section 4.1 (Layout - Top navbar, horizontal)
+
+- [ ] **Task 8: Testing and Verification** (AC: All)
+  - [ ] Test navbar displays on all pages
+  - [ ] Test navigation links work correctly (Home, Play, Profile)
+  - [ ] Test active state indication works (current route highlighted)
+  - [ ] Test profile state display (nickname shown when profile exists)
+  - [ ] Test dropdown menu functionality (opens/closes correctly)
+  - [ ] Test "Create Profile" button displays when no profile
+  - [ ] Test "Create Profile" button navigates to create profile page
+  - [ ] Test "Clear Profile" functionality (clears localStorage and store)
+  - [ ] Test navbar updates reactively when profile state changes
+  - [ ] Test responsive design on desktop (1280px+)
+  - [ ] Verify profile check uses profile store (not localStorage directly)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**AC1: Navigation Bar Structure**
+Given the application has a navigation bar
+When the user views any page
+Then the navigation bar includes:
+- Logo/brand name on the left ("Chess Ascension")
+- Navigation links: "Play", "Profile" (if profile exists), "Home"
+- Right side: "Create Profile" button (if no profile) OR user nickname with dropdown (if profile exists)
+- Active state indication: Underline or slight background color change (UX Design Specification section 7.4 - Navigation Patterns)
+- Responsive design: Horizontal navbar for desktop (1280px+ minimum)
+
+**AC2: Profile State Display**
+And when user has a profile:
+- User nickname shown (from localStorage profile)
+- Dropdown menu includes: "Profile", "Clear Profile" (optional, clears localStorage)
+- Profile automatically loads from localStorage on app initialization
+
+**AC3: No Profile State Display**
+And when user doesn't have a profile:
+- "Create Profile" button shown
+- Button navigates to create profile page
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Data Model (localStorage)" snippet="Profile object structure with nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses. Storage key: chessAscensionProfile." />
+      <doc path="docs/architecture.md" title="Architecture" section="Routing Layer" snippet="React Router for client-side routing. Route definitions in routes.ts. Handles navigation with route protection optional for MVP." />
+      <doc path="docs/architecture.md" title="Architecture" section="Profile Layer" snippet="Zustand profile store synced with localStorage. Profile loads on app initialization. Store exposes clean API for UI layer." />
+      <doc path="docs/architecture.md" title="Architecture" section="File & Folder Structure" snippet="Navigation component location: /src/components/Navbar.tsx or /src/components/UI/Navbar.tsx. Profile store: /src/stores/profileStore.ts. Profile storage utility: /src/services/profileStorage.ts." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 Color System" snippet="Classic Chess theme: Primary #1e293b (Slate 800), Secondary #475569 (Slate 600), Accent #f59e0b (Amber 500). Neutral #64748b (Slate 500)." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="4.1 Design Direction" snippet="Spacious & Centered layout. Top navbar with logo left, links right. Horizontal navigation. Active state: Underline or slight background color change." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="7.4 Navigation Patterns" snippet="Active state indication: Underline or slight background color change. Primary color (#1e293b) for active link. Subtle hover effect (opacity change)." />
+      <doc path="docs/epics.md" title="Epics" section="Story 2.4: Navigation Bar with Auth State" snippet="Navigation bar with auth state display. Shows login status, navigation links, profile state. Conditional rendering based on profile existence." />
+    </docs>
+    <code>
+      <artifact path="src/stores/profileStore.ts" kind="store" symbol="useProfileStore" lines="1-111" reason="Zustand profile store provides profile state (nickname, xp, level, rank, etc.). Store is reactive and updates components when profile changes. Use hook to access profile state in Navbar component." />
+      <artifact path="src/services/profileStorage.ts" kind="service" symbol="clearProfile, profileExists" lines="132-180" reason="Profile storage utility provides clearProfile() to remove profile from localStorage and profileExists() to check if profile exists. Used for clear profile functionality and profile state checks." />
+      <artifact path="src/App.tsx" kind="component" symbol="App" lines="1-84" reason="Main App component with React Router setup. Profile loads from localStorage on app initialization and syncs to Zustand store. Routes defined here. Navbar should be added above Routes component." />
+      <artifact path="src/app/routes.ts" kind="config" symbol="routes" lines="1-16" reason="Route definitions file (currently minimal). Routes are defined in App.tsx. Navigation links should match route paths: /, /create-profile, /profile." />
+      <artifact path="src/pages/Profile.tsx" kind="component" symbol="Profile" lines="1-100" reason="Profile page component demonstrates profile store usage pattern. Uses useProfileStore hook to access profile state. Shows conditional rendering based on profile existence." />
+      <artifact path="src/pages/CreateProfile.tsx" kind="component" symbol="CreateProfile" lines="1-271" reason="Create Profile page component. Uses useNavigate from react-router-dom for navigation. Demonstrates navigation patterns and form handling." />
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" lines="1-60" reason="shadcn/ui Button component. Use for Create Profile button and other navigation buttons. Supports variants: default, destructive, outline, secondary, ghost, link." />
+    </code>
+    <dependencies>
+      <node>
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-separator" version="^1.1.8" />
+        <package name="@radix-ui/react-slot" version="^1.2.4" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Navigation component location: /src/components/Navbar.tsx or /src/components/UI/Navbar.tsx (Architecture section 8 - File & Folder Structure)</constraint>
+    <constraint>Use React Router Link and NavLink components for navigation (Architecture section 3 - Routing Layer)</constraint>
+    <constraint>Profile state check: Use profile store (useProfileStore hook), not localStorage directly (Story 2.2 learnings)</constraint>
+    <constraint>Profile loading: Profile already loaded from localStorage on app init (Story 2.2), Navbar can access profile data immediately</constraint>
+    <constraint>Use shadcn/ui Button component for Create Profile button (Story 1.3)</constraint>
+    <constraint>Styling: Classic Chess theme colors (UX Design Specification section 3.1) - Primary #1e293b, Secondary #475569, Accent #f59e0b</constraint>
+    <constraint>Layout: Top navbar, horizontal (UX Design Specification section 4.1)</constraint>
+    <constraint>Active state: Primary color (#1e293b) for active link (UX Design Specification section 7.4)</constraint>
+    <constraint>Responsive design: Desktop 1280px+ minimum (UX Design Specification section 8.1)</constraint>
+    <constraint>Profile store reactivity: Zustand handles component re-renders when store updates automatically</constraint>
+    <constraint>Clear profile: Use clearProfile() from profileStorage.ts and resetProfile() from profile store</constraint>
+    <constraint>Routes available: / (Home), /create-profile, /profile, /onboarding (redirects to CreateProfile)</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="useProfileStore" kind="hook" signature="const { nickname, level, rank, ... } = useProfileStore()" path="src/stores/profileStore.ts" />
+    <interface name="ProfileStoreActions" kind="interface" signature="updateProfile: (profile: ProfileState) => void; resetProfile: () => void" path="src/stores/profileStore.ts" />
+    <interface name="clearProfile" kind="function" signature="clearProfile(): void" path="src/services/profileStorage.ts" />
+    <interface name="profileExists" kind="function" signature="profileExists(): boolean" path="src/services/profileStorage.ts" />
+    <interface name="React Router Link" kind="component" signature="&lt;Link to=&quot;/path&quot;&gt;Text&lt;/Link&gt;" path="react-router-dom" />
+    <interface name="React Router NavLink" kind="component" signature="&lt;NavLink to=&quot;/path&quot; className={({ isActive }) =&gt; isActive ? &quot;active&quot; : &quot;&quot;}&gt;Text&lt;/NavLink&gt;" path="react-router-dom" />
+    <interface name="React Router useNavigate" kind="hook" signature="const navigate = useNavigate(); navigate(&quot;/path&quot;)" path="react-router-dom" />
+    <interface name="shadcn/ui Button" kind="component" signature="&lt;Button variant=&quot;default&quot; onClick={handler}&gt;Text&lt;/Button&gt;" path="src/components/UI/button.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>Testing should use React Testing Library for component testing. Test user interactions, navigation, conditional rendering based on profile state. Verify profile store integration and localStorage operations. Test responsive design on desktop (1280px+). Follow existing test patterns from Story 2.1, 2.2, 2.3 if test files exist.</standards>
+    <locations>Test files should be co-located with components (e.g., Navbar.test.tsx) or in a __tests__ directory. Integration tests for navigation flow in App.test.tsx or similar.</locations>
+    <ideas>
+      <test ac="AC1">Test navbar renders on all pages (Home, Create Profile, Profile)</test>
+      <test ac="AC1">Test navigation links render correctly (Home, Play, Profile conditional)</test>
+      <test ac="AC1">Test active state indication works (current route highlighted with primary color)</test>
+      <test ac="AC1">Test responsive design (desktop 1280px+ minimum)</test>
+      <test ac="AC2">Test user nickname displays when profile exists</test>
+      <test ac="AC2">Test dropdown menu opens/closes correctly</test>
+      <test ac="AC2">Test dropdown menu items navigate correctly (Profile, Clear Profile)</test>
+      <test ac="AC2">Test profile state updates reflect in Navbar reactively</test>
+      <test ac="AC3">Test "Create Profile" button displays when no profile</test>
+      <test ac="AC3">Test "Create Profile" button navigates to /create-profile</test>
+      <test ac="AC2">Test clear profile functionality (clears localStorage and store, navigates appropriately)</test>
+      <test ac="AC2">Test clear profile confirmation dialog (if implemented)</test>
+    </ideas>
+  </tests>
+</story-context>
+

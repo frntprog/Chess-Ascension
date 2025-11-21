@@ -1,0 +1,144 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>1</storyId>
+    <title>Landing Page with Mode Selection</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-1-landing-page-with-mode-selection.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user</asA>
+    <iWant>I want to see a landing page with clear navigation and mode selection</iWant>
+    <soThat>So that I can easily start playing chess</soThat>
+    <tasks>
+      <task id="1" ac="1">Create Landing Page Component - Create /src/pages/Landing.tsx component, import React Router components (Link, useNavigate), import shadcn/ui components (Card, Button), set up component structure with centered layout, apply Classic Chess theme colors, implement max-width 1200px container</task>
+      <task id="2" ac="1">Implement Hero Section - Add hero section with "Chess Ascension" title, add tagline text below title, style hero section with centered alignment, apply typography per UX Design Specification section 3.2 (H1: 2rem for title), add spacing per UX Design Specification section 3.3 (spacious margins)</task>
+      <task id="3" ac="1">Implement Feature Cards - Create 3-column grid for feature cards (desktop, flex-wrap for smaller screens), create feature card for "Classic Mode" with description, create feature card for "RPG Elements" with description, create feature card for "Quick Sessions" with description, use shadcn/ui Card component for each feature card, style cards with Classic Chess theme (white background, subtle borders), apply responsive grid layout (3-column on desktop, single column on smaller screens)</task>
+      <task id="4" ac="1,2">Implement Start Playing Button - Add "Start Playing" button in hero section, style button with accent color (#f59e0b) per UX Design Specification section 7.1, import useProfileStore from /src/stores/profileStore.ts, check profile existence (nickname check), implement navigation logic: If profile exists: Navigate to mode selection page, If no profile: Navigate to create profile page, use React Router's useNavigate hook for navigation</task>
+      <task id="5" ac="1">Integrate Navigation Bar - Ensure Navbar component (from Story 2.4) is visible on landing page, verify Navbar displays correctly above landing page content, test navigation links work from landing page</task>
+      <task id="6" ac="1">Styling and Layout - Apply "Spacious & Centered" design approach (UX Design Specification section 4.1), style with Classic Chess theme colors (UX Design Specification section 3.1), ensure centered layout with wide margins, apply proper spacing between sections (8px system, UX Design Specification section 3.3), ensure responsive design for desktop (1280px+ minimum), follow typography scale (UX Design Specification section 3.2)</task>
+      <task id="7" ac="All">Testing and Verification - Test landing page displays correctly on desktop (1280px+), test hero section renders with title and tagline, test feature cards display in 3-column grid, test "Start Playing" button navigates correctly (with profile: Navigate to mode selection, without profile: Navigate to create profile page), test navigation bar displays and works correctly, test responsive layout (cards wrap on smaller screens), verify Classic Chess theme colors applied correctly, verify centered layout with max-width 1200px</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>Given a user visits the landing page</given>
+      <when>When the page loads</when>
+      <then>Then the landing page displays: Hero section with "Chess Ascension" title and tagline, Feature cards highlighting Classic Mode, RPG Elements, Quick Sessions (3-column grid), "Start Playing" button (primary action, accent color), Navigation bar (from Story 2.4), Centered layout with max-width 1200px (UX Design Specification section 4.1)</then>
+    </criterion>
+    <criterion id="AC2">
+      <given>Given a user visits the landing page</given>
+      <when>And when user clicks "Start Playing"</when>
+      <then>Then: If logged in: Navigate to mode selection page, If not logged in: Navigate to registration/login page</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="5.1 Core Features (V1)" snippet="Landing page is listed as a core feature. The PRD specifies that the system is fully client-side with localStorage for profile persistence. User flows describe landing page as entry point for first-time users." />
+      <doc path="docs/architecture.md" title="Architecture Document" section="3. Routing Layer" snippet="React Router handles client-side routing for all pages including Landing. Route definitions should be in routes.ts or App.tsx. Navigation uses React Router's Link component or useNavigate hook." />
+      <doc path="docs/architecture.md" title="Architecture Document" section="8. File & Folder Structure" snippet="Landing page component should be located at /src/pages/Landing.tsx. Pages directory structure follows client-only monorepo pattern." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="4.1 Chosen Design Approach" snippet="Spacious & Centered layout approach: Centered content with wide margins, maximum container width 1200px, wide spacing between sections, hero section on landing page with clear CTAs." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 Color System" snippet="Classic Chess theme: Primary #1e293b (Slate 800), Secondary #475569 (Slate 600), Accent #f59e0b (Amber 500), Neutral #64748b (Slate 500). Background white, borders #e2e8f0." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="7.1 Button Hierarchy" snippet="Accent Button: Style Gold (#f59e0b) background, white or dark text. Usage: Important CTAs (Start Playing hero button), achievements. States: Normal, hover (opacity 0.9)." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="5.1 Journey 1: First-Time User" snippet="Landing Page (Entry): User sees hero section with 'Chess Ascension' title and tagline, feature cards (Classic Mode, RPG Elements, Quick Sessions), user clicks 'Start Playing' button, system responds: Navigate to onboarding screen." />
+      <doc path="docs/epics.md" title="Epics Document" section="Story 3.1: Landing Page with Mode Selection" snippet="Story acceptance criteria specify hero section, feature cards in 3-column grid, Start Playing button with accent color, navigation bar integration, centered layout with max-width 1200px. Navigation logic: If logged in navigate to mode selection, if not logged in navigate to registration/login page." />
+    </docs>
+    <code>
+      <artifact path="src/pages/CreateProfile.tsx" kind="component" symbol="CreateProfile" reason="Reference implementation for page component structure, navigation patterns, and shadcn/ui component usage" />
+      <artifact path="src/pages/Profile.tsx" kind="component" symbol="Profile" reason="Reference for page component structure, profile store usage, and layout patterns" />
+      <artifact path="src/components/Navbar.tsx" kind="component" symbol="Navbar" reason="Navigation bar component that must be visible on landing page. Shows profile state and navigation links. Uses React Router Link and NavLink components." />
+      <artifact path="src/components/UI/card.tsx" kind="component" symbol="Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter" reason="shadcn/ui Card component to be used for feature cards. Provides Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter exports." />
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" reason="shadcn/ui Button component for Start Playing button. Supports variants (default, accent styling), sizes, and asChild prop for composition." />
+      <artifact path="src/stores/profileStore.ts" kind="store" symbol="useProfileStore" reason="Zustand profile store hook. Use to check profile existence via nickname field. Profile loads automatically on app init (Story 2.2), so store can be accessed directly." />
+      <artifact path="src/App.tsx" kind="component" symbol="App" reason="Main app component with React Router setup. Shows route definitions pattern. Currently has / route pointing to TestShadcn, needs to be updated to Landing page. Navbar is already integrated above Routes." />
+      <artifact path="src/app/routes.ts" kind="config" symbol="routes" reason="Route definitions file (currently minimal, routes defined in App.tsx). Reference for routing patterns." />
+      <artifact path="src/services/profileStorage.ts" kind="service" symbol="profileExists, loadProfile" reason="Profile storage utilities. profileExists() checks if profile exists in localStorage. loadProfile() loads profile data. Profile loading happens automatically in App.tsx on mount." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-separator" version="^1.1.8" />
+        <package name="@radix-ui/react-slot" version="^1.2.4" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </ecosystem>
+      <ecosystem name="dev">
+        <package name="typescript" version="^5.5.3" />
+        <package name="vite" version="^5.3.4" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="@vitejs/plugin-react" version="^4.3.1" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Landing page component location: /src/pages/Landing.tsx (Architecture section 8 - File & Folder Structure)</constraint>
+    <constraint>Navigation: React Router (per Architecture section 3 - Routing Layer). Use Link component or useNavigate hook for navigation</constraint>
+    <constraint>Profile check: Use useProfileStore() hook and check nickname field (if nickname exists, profile exists). Profile loads automatically on app init (Story 2.2)</constraint>
+    <constraint>UI Components: Use shadcn/ui Card and Button components (Story 1.3). Components located in /src/components/UI/</constraint>
+    <constraint>Styling: Classic Chess theme colors (UX Design Specification section 3.1) - Primary #1e293b, Secondary #475569, Accent #f59e0b, Neutral #64748b</constraint>
+    <constraint>Layout: Spacious & Centered approach (UX Design Specification section 4.1) - Centered content with max-width 1200px, wide margins, spacious spacing</constraint>
+    <constraint>Typography: Follow UX Design Specification section 3.2 - H1: 2rem (32px) for title, body: 1rem (16px), spacing: 8px system</constraint>
+    <constraint>Responsive design: Desktop 1280px+ minimum (UX Design Specification section 8.1). Cards wrap on smaller screens (flex-wrap)</constraint>
+    <constraint>Button styling: Start Playing button uses accent color (#f59e0b) per UX Design Specification section 7.1</constraint>
+    <constraint>Navbar integration: Navbar component from Story 2.4 must be visible on landing page. Already integrated in App.tsx above Routes</constraint>
+    <constraint>Route update: Update / route in App.tsx from TestShadcn to Landing component</constraint>
+    <constraint>Profile navigation logic: If profile exists (nickname check): Navigate to mode selection page (route to be created in Story 3.2), If no profile: Navigate to /create-profile page</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="useProfileStore" kind="hook" signature="const { nickname, level, rank, ... } = useProfileStore()" path="src/stores/profileStore.ts">
+      <description>Zustand profile store hook. Returns profile state including nickname. Check nickname field to determine if profile exists. Profile loads automatically on app initialization.</description>
+    </interface>
+    <interface name="useNavigate" kind="hook" signature="const navigate = useNavigate(); navigate('/path')" path="react-router-dom">
+      <description>React Router navigation hook. Use for programmatic navigation. Call navigate('/path') to navigate to route.</description>
+    </interface>
+    <interface name="Link" kind="component" signature="&lt;Link to='/path'&gt;Text&lt;/Link&gt;" path="react-router-dom">
+      <description>React Router Link component for declarative navigation. Use for navigation links in JSX.</description>
+    </interface>
+    <interface name="Card" kind="component" signature="&lt;Card&gt;&lt;CardHeader&gt;&lt;CardTitle&gt;Title&lt;/CardTitle&gt;&lt;/CardHeader&gt;&lt;CardContent&gt;Content&lt;/CardContent&gt;&lt;/Card&gt;" path="src/components/UI/card.tsx">
+      <description>shadcn/ui Card component. Use for feature cards. Provides Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter sub-components.</description>
+    </interface>
+    <interface name="Button" kind="component" signature="&lt;Button variant='default' size='default'&gt;Text&lt;/Button&gt;" path="src/components/UI/button.tsx">
+      <description>shadcn/ui Button component. Use for Start Playing button. Supports variants (default, destructive, outline, secondary, ghost, link) and sizes (default, sm, lg, icon). Apply accent color styling via className or custom variant.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should verify all acceptance criteria. Use manual testing for UI components and navigation flows. Test profile state checks and conditional navigation. Verify responsive layout and theme color application. Test integration with Navbar component.
+    </standards>
+    <locations>
+      <location>Manual testing in browser (desktop 1280px+ viewport)</location>
+      <location>Component testing: Test Landing component renders correctly</location>
+      <location>Integration testing: Test navigation flows and profile state checks</location>
+    </locations>
+    <ideas>
+      <test ac="AC1">Verify landing page displays hero section with "Chess Ascension" title and tagline</test>
+      <test ac="AC1">Verify feature cards display in 3-column grid on desktop, wrap on smaller screens</test>
+      <test ac="AC1">Verify "Start Playing" button displays with accent color (#f59e0b)</test>
+      <test ac="AC1">Verify Navbar component is visible above landing page content</test>
+      <test ac="AC1">Verify centered layout with max-width 1200px container</test>
+      <test ac="AC2">Test navigation: With profile (nickname exists) - navigate to mode selection page</test>
+      <test ac="AC2">Test navigation: Without profile (no nickname) - navigate to /create-profile page</test>
+      <test ac="AC1">Verify Classic Chess theme colors applied correctly (primary, secondary, accent)</test>
+      <test ac="AC1">Verify responsive design: Cards wrap on smaller screens, layout adapts</test>
+      <test ac="AC1">Verify typography: H1 title uses 2rem (32px), body text uses 1rem (16px)</test>
+      <test ac="AC1">Verify spacing: 8px system spacing between sections</test>
+    </ideas>
+  </tests>
+</story-context>
+

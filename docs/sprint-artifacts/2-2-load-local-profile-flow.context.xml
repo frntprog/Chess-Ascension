@@ -1,0 +1,423 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2-2</storyId>
+    <title>Load Local Profile Flow</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-2-load-local-profile-flow.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a returning user</asA>
+    <iWant>I want my existing profile to load automatically</iWant>
+    <soThat>So that I can continue playing and see my progression</soThat>
+    <tasks>
+      <task id="1" ac="1,2,5">
+        <title>Implement App-Level Profile Loading</title>
+        <subtasks>
+          <subtask>Create profile loading logic in main App component or app initialization hook</subtask>
+          <subtask>Import `loadProfile` and `profileExists` from `/src/services/profileStorage.ts` (Story 1.2)</subtask>
+          <subtask>Check for existing profile on app mount: `profileExists()`</subtask>
+          <subtask>If profile exists, load profile: `loadProfile()`</subtask>
+          <subtask>Handle null return (no profile exists) gracefully</subtask>
+          <subtask>Implement app initialization in `/src/App.tsx` or custom hook</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="3">
+        <title>Integrate Profile Store Sync</title>
+        <subtasks>
+          <subtask>Import `useProfileStore` from `/src/stores/profileStore.ts` (Story 1.4)</subtask>
+          <subtask>Implement profile store update after profile load</subtask>
+          <subtask>Update all profile store fields: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats</subtask>
+          <subtask>Verify store state matches localStorage profile data</subtask>
+          <subtask>Test store state accessible via `useProfileStore()` hook</subtask>
+          <subtask>Ensure store update happens on app initialization (before first render)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="4">
+        <title>Handle No Profile State</title>
+        <subtasks>
+          <subtask>Check if profile exists before attempting load</subtask>
+          <subtask>If no profile, show "Create Profile" option or redirect to create profile page</subtask>
+          <subtask>No error message displayed (expected for first-time users)</subtask>
+          <subtask>User can navigate freely without profile (or with route guard)</subtask>
+          <subtask>Implement conditional UI rendering based on profile existence</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="6">
+        <title>Implement Error Handling</title>
+        <subtasks>
+          <subtask>Wrap `loadProfile()` call in try-catch for error handling</subtask>
+          <subtask>Handle JSON parse errors gracefully (corrupted localStorage data)</subtask>
+          <subtask>Handle localStorage unavailable errors</subtask>
+          <subtask>Show error message if profile corrupted (offer to create new profile)</subtask>
+          <subtask>Prevent app crash on profile load failure</subtask>
+          <subtask>Log errors to console for debugging (development only)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="2,5">
+        <title>Profile Persistence Verification</title>
+        <subtasks>
+          <subtask>Verify profile loads automatically on page reload</subtask>
+          <subtask>Test profile data persists across browser sessions</subtask>
+          <subtask>Test profile persistence across page navigations</subtask>
+          <subtask>Verify no duplicate profile loads (check for existing store state before loading)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac="1">
+        <title>Integration with Navigation/UI</title>
+        <subtasks>
+          <subtask>Update navigation component to show user nickname if profile exists (Story 2.4, future)</subtask>
+          <subtask>Update UI to show profile-based state (nickname, level, rank)</subtask>
+          <subtask>Ensure profile data available for profile page display (Story 2.3, future)</subtask>
+          <subtask>Implement conditional rendering based on profile existence</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac="All">
+        <title>Testing and Verification</title>
+        <subtasks>
+          <subtask>Test profile loading on app initialization</subtask>
+          <subtask>Test profile store sync after load</subtask>
+          <subtask>Test no profile handling (first-time user)</subtask>
+          <subtask>Test error handling (corrupted data, localStorage errors)</subtask>
+          <subtask>Test profile persistence across page reloads</subtask>
+          <subtask>Test profile persistence across browser sessions</subtask>
+          <subtask>Verify profile data matches localStorage structure (PRD section 8)</subtask>
+          <subtask>Verify profile store state matches localStorage data</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <title>Profile Check on App Initialization</title>
+      <given>Given a user visits the application</given>
+      <when>When the app initializes</when>
+      <then>
+        <item>Profile check on app load (localStorage lookup using `profileExists()` from profileStorage utility)</item>
+        <item>If profile exists: Profile is loaded from localStorage</item>
+        <item>If profile exists: Profile data is synced to Zustand profile store</item>
+        <item>If profile exists: User sees their nickname in navigation/profile</item>
+        <item>If profile doesn't exist: User sees "Create Profile" option</item>
+      </then>
+    </criterion>
+    <criterion id="AC2">
+      <title>Profile Loading from localStorage</title>
+      <given>And when profile exists and loads</given>
+      <then>
+        <item>Profile data loaded using `loadProfile()` from profileStorage utility (`/src/services/profileStorage.ts` from Story 1.2)</item>
+        <item>Profile store updated with loaded data (nickname, xp, level, rank, stats, unlocks)</item>
+        <item>No redirect needed (user can navigate freely)</item>
+        <item>Profile data persists across page reloads automatically (localStorage)</item>
+      </then>
+    </criterion>
+    <criterion id="AC3">
+      <title>Profile Store Sync</title>
+      <given>And when profile loads</given>
+      <then>
+        <item>Profile store updated with all profile fields: nickname (from localStorage profile), xp, level, rank (progression data), unlockedSkins, selectedSkin (cosmetic unlocks), unlockedAbilities (ability unlocks), gamesPlayed, bestScore, wins, losses (stats)</item>
+        <item>Store state matches localStorage profile data (single source of truth: localStorage)</item>
+        <item>Profile store accessible via `useProfileStore()` hook throughout application</item>
+        <item>Store update triggers component re-renders for navigation/profile display</item>
+      </then>
+    </criterion>
+    <criterion id="AC4">
+      <title>No Profile Handling</title>
+      <given>And when profile doesn't exist</given>
+      <then>
+        <item>User can create new profile (Story 2.1)</item>
+        <item>No error message needed (this is expected for first-time users)</item>
+        <item>App shows "Create Profile" button or redirects to create profile page</item>
+      </then>
+    </criterion>
+    <criterion id="AC5">
+      <title>Automatic Profile Loading</title>
+      <given>And profile loading</given>
+      <then>
+        <item>Automatic on app initialization (no user action required)</item>
+        <item>Profile loads from localStorage on app mount (in main App component or route guard)</item>
+        <item>No user action required (profile loads from localStorage automatically)</item>
+        <item>Profile persistence: Automatic via localStorage (no user action needed)</item>
+      </then>
+    </criterion>
+    <criterion id="AC6">
+      <title>Error Handling</title>
+      <given>And when profile load encounters errors</given>
+      <then>
+        <item>Handles JSON parse errors gracefully (return null if profile corrupted, show error option)</item>
+        <item>Handles localStorage errors (quota exceeded, unavailable) gracefully</item>
+        <item>Shows error message if profile data is corrupted (offer to create new profile)</item>
+        <item>No app crash on profile load failure</item>
+      </then>
+    </criterion>
+    <criterion id="AC7">
+      <title>Profile Existence Check Utility</title>
+      <given>And when checking for profile existence</given>
+      <then>
+        <item>Uses `profileExists()` utility function from profileStorage service</item>
+        <item>Returns boolean indicating if valid profile exists in localStorage</item>
+        <item>Checks localStorage key: `chessAscensionProfile` (PRD section 8, Architecture section 6)</item>
+        <item>Handles edge cases (corrupted data, missing key)</item>
+      </then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>User Flows (Section 4.1) - Profile loading flow</section>
+        <snippet>User creates/loads local profile (nickname). Profile data persists in localStorage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Data Model (localStorage) (Section 8)</section>
+        <snippet>Storage Key: `chessAscensionProfile`. Profile Object structure with nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Profile Layer (Zustand + localStorage) (Section 3)</section>
+        <snippet>Profile Layer reads from localStorage on app load, writes updates after match end. Exposes clean API for UI and session layer. Single source of truth: localStorage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Onboarding Flow (MVP) (Section 7)</section>
+        <snippet>Returning User: App loads profile from localStorage on mount. If profile exists, user proceeds directly to mode selection. If no profile, redirect to onboarding.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>localStorage Structure (Section 6)</section>
+        <snippet>Storage Key: `chess-ascension-profile` (note: implementation uses `chessAscensionProfile` per PRD). Profile data structure with all fields matching PRD section 8.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Data Flow Summary (Section 4)</section>
+        <snippet>Profile loading on app initialization: Profile store reads from localStorage on mount, syncs state, makes profile data available throughout application.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.2: Load Local Profile Flow</section>
+        <snippet>As a returning user, I want my existing profile to load automatically, so that I can continue playing and see my progression. Complete acceptance criteria and technical notes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation & Project Setup</title>
+        <section>APIs and Interfaces - profileStorage Service API</section>
+        <snippet>profileStorage Service API: `saveProfile(profile: Profile): void`, `loadProfile(): Profile | null`, `clearProfile(): void`, `profileExists(): boolean`. Error handling for JSON parse errors, localStorage quota exceeded, localStorage unavailable.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-1-create-local-profile-flow.md</path>
+        <title>Story 2.1: Create Local Profile Flow</title>
+        <section>Dev Agent Record - Learnings from Previous Story</section>
+        <snippet>Profile store `updateProfile` action signature: `updateProfile: (profile: Profile) => void`. Profile loading should mirror profile creation flow but in reverse (read from localStorage, update store). Use `loadProfile()` utility which returns `Profile | null` (handle null case for no profile).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/services/profileStorage.ts</path>
+        <kind>service</kind>
+        <symbol>loadProfile</symbol>
+        <lines>96-119</lines>
+        <reason>Primary function for loading profile from localStorage. Returns Profile | null. Handles JSON parse errors gracefully. Used in app initialization to load existing profile.</reason>
+      </artifact>
+      <artifact>
+        <path>src/services/profileStorage.ts</path>
+        <kind>service</kind>
+        <symbol>profileExists</symbol>
+        <lines>160-180</lines>
+        <reason>Utility function to check if valid profile exists in localStorage. Returns boolean. Used to determine if profile loading should be attempted on app initialization.</reason>
+      </artifact>
+      <artifact>
+        <path>src/services/profileStorage.ts</path>
+        <kind>service</kind>
+        <symbol>Profile</symbol>
+        <lines>14-26</lines>
+        <reason>Profile interface matching PRD section 8 (localStorage data model). Defines structure of profile data loaded from localStorage.</reason>
+      </artifact>
+      <artifact>
+        <path>src/stores/profileStore.ts</path>
+        <kind>store</kind>
+        <symbol>useProfileStore</symbol>
+        <lines>100-110</lines>
+        <reason>Zustand profile store hook. Provides `updateProfile` action to sync loaded profile data to store state. Store state accessible throughout application via this hook.</reason>
+      </artifact>
+      <artifact>
+        <path>src/stores/profileStore.ts</path>
+        <kind>store</kind>
+        <symbol>ProfileState</symbol>
+        <lines>16-47</lines>
+        <reason>Profile state interface matching Architecture section 3 (Profile Layer). Defines structure of profile store state that must be synced from loaded localStorage profile.</reason>
+      </artifact>
+      <artifact>
+        <path>src/stores/profileStore.ts</path>
+        <kind>store</kind>
+        <symbol>updateProfile</symbol>
+        <lines>103-105</lines>
+        <reason>Store action to update profile state. Accepts full ProfileState object and updates all fields. Used after profile load to sync localStorage data to store.</reason>
+      </artifact>
+      <artifact>
+        <path>src/App.tsx</path>
+        <kind>component</kind>
+        <symbol>App</symbol>
+        <lines>5-16</lines>
+        <reason>Main App component with React Router setup. Profile loading logic should be added here on component mount (useEffect hook) to check for and load existing profile.</reason>
+      </artifact>
+      <artifact>
+        <path>src/pages/CreateProfile.tsx</path>
+        <kind>component</kind>
+        <symbol>CreateProfile</symbol>
+        <lines>134-148</lines>
+        <reason>Example of profile store update pattern from Story 2.1. Shows how to call `updateProfile()` with loaded profile data. Pattern to follow for profile loading: load from localStorage, then update store.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1"/>
+        <package name="react-dom" version="^18.3.1"/>
+        <package name="react-router-dom" version="^6.30.2"/>
+        <package name="zustand" version="^5.0.8"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Architecture Pattern</category>
+      <description>Profile loading uses `profileStorage` utility from Story 1.2 (`/src/services/profileStorage.ts`). Profile data structure matches PRD section 8 (localStorage data model) and Architecture section 6.</description>
+    </constraint>
+    <constraint>
+      <category>Storage Key</category>
+      <description>Profile stored in localStorage with key: `chessAscensionProfile` (PRD section 8, Architecture section 6). Note: Architecture doc mentions `chess-ascension-profile` but PRD is authoritative, so use `chessAscensionProfile` consistently.</description>
+    </constraint>
+    <constraint>
+      <category>State Management</category>
+      <description>Profile store sync: Update Zustand profile store after profile load (Architecture section 3 - Profile Layer). Store structure from Story 1.4: `/src/stores/profileStore.ts` with ProfileState interface. Store update triggers component re-renders for navigation/profile display.</description>
+    </constraint>
+    <constraint>
+      <category>Single Source of Truth</category>
+      <description>localStorage is the single source of truth. Profile store syncs from localStorage, not vice versa. Store state should match localStorage profile data.</description>
+    </constraint>
+    <constraint>
+      <category>App Initialization</category>
+      <description>Profile check happens on app mount (in main App component or initialization hook). Profile load is automatic (no user action required). Profile persistence: Automatic via localStorage (browser handles persistence).</description>
+    </constraint>
+    <constraint>
+      <category>Error Handling</category>
+      <description>JSON parse errors: Handle gracefully (return null from loadProfile, show error option). localStorage quota exceeded: Handle gracefully (show error message, allow retry or clear). localStorage unavailable: Handle gracefully (rare in modern browsers, show error message). Corrupted profile data: Offer to create new profile or clear corrupted data.</description>
+    </constraint>
+    <constraint>
+      <category>Navigation and Routing</category>
+      <description>No redirect needed for profile loading (user can navigate freely). Profile loading doesn't block navigation (loads in background). Conditional UI rendering based on profile existence (Story 2.4 for navigation). Route protection: Optional for MVP (can defer route guards, allow free navigation).</description>
+    </constraint>
+    <constraint>
+      <category>File Structure</category>
+      <description>Profile loading: App initialization in `/src/App.tsx` or custom hook (Architecture section 8 - File & Folder Structure). Profile storage utility: `/src/services/profileStorage.ts` (Story 1.2). Profile store: `/src/stores/profileStore.ts` (Story 1.4).</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>loadProfile</name>
+      <kind>function signature</kind>
+      <signature>loadProfile(): Profile | null</signature>
+      <path>src/services/profileStorage.ts</path>
+      <description>Loads profile from localStorage. Returns Profile object if exists and valid, null if not found or corrupted. Handles JSON parse errors gracefully.</description>
+    </interface>
+    <interface>
+      <name>profileExists</name>
+      <kind>function signature</kind>
+      <signature>profileExists(): boolean</signature>
+      <path>src/services/profileStorage.ts</path>
+      <description>Checks if valid profile exists in localStorage. Returns true if profile exists and is valid, false otherwise. Handles edge cases (corrupted data, missing key).</description>
+    </interface>
+    <interface>
+      <name>useProfileStore</name>
+      <kind>Zustand hook</kind>
+      <signature>useProfileStore(): ProfileState & ProfileStoreActions</signature>
+      <path>src/stores/profileStore.ts</path>
+      <description>Zustand profile store hook. Provides access to profile state (nickname, xp, level, rank, etc.) and actions (updateProfile, resetProfile). Store state accessible throughout application.</description>
+    </interface>
+    <interface>
+      <name>updateProfile</name>
+      <kind>store action</kind>
+      <signature>updateProfile(profile: ProfileState): void</signature>
+      <path>src/stores/profileStore.ts</path>
+      <description>Store action to update profile state. Accepts full ProfileState object and updates all fields. Used after profile load to sync localStorage data to store.</description>
+    </interface>
+    <interface>
+      <name>Profile</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface Profile { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; gamesPlayed: number; bestScore: number; wins: number; losses: number; }</signature>
+      <path>src/services/profileStorage.ts</path>
+      <description>Profile interface matching PRD section 8 (localStorage data model). Defines structure of profile data loaded from localStorage.</description>
+    </interface>
+    <interface>
+      <name>ProfileState</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface ProfileState { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; bestScore: number; stats: { gamesPlayed: number; wins: number; losses: number; }; }</signature>
+      <path>src/stores/profileStore.ts</path>
+      <description>Profile state interface matching Architecture section 3 (Profile Layer). Defines structure of profile store state that must be synced from loaded localStorage profile.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing approach for Story 2.2. Testing focuses on profile loading behavior, store sync, error handling, and persistence. Test profile loading on app initialization, store sync after load, no profile handling, error scenarios, and persistence across page reloads and browser sessions. Verify profile data matches localStorage structure and store state matches localStorage data.
+    </standards>
+    <locations>
+      <location>Manual testing in browser DevTools</location>
+      <location>Test profile loading in `/src/App.tsx` component</location>
+      <location>Test profile store sync in `/src/stores/profileStore.ts`</location>
+      <location>Test error handling in `/src/services/profileStorage.ts`</location>
+    </locations>
+    <ideas>
+      <test ac="AC1">
+        <title>Test Profile Check on App Initialization</title>
+        <description>Open application in browser. Verify profile check happens on app load. If profile exists in localStorage, verify profile is loaded. If no profile exists, verify "Create Profile" option is shown.</description>
+      </test>
+      <test ac="AC2">
+        <title>Test Profile Loading from localStorage</title>
+        <description>Create profile using Story 2.1. Reload page. Verify profile loads automatically from localStorage. Verify profile data is available in profile store. Verify no redirect occurs.</description>
+      </test>
+      <test ac="AC3">
+        <title>Test Profile Store Sync</title>
+        <description>Load profile from localStorage. Verify all profile fields are updated in store: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats. Verify store state matches localStorage data. Verify store accessible via `useProfileStore()` hook.</description>
+      </test>
+      <test ac="AC4">
+        <title>Test No Profile Handling</title>
+        <description>Clear localStorage. Open application. Verify no error message is shown. Verify "Create Profile" option is available. Verify user can navigate freely without profile.</description>
+      </test>
+      <test ac="AC5">
+        <title>Test Automatic Profile Loading</title>
+        <description>Create profile. Reload page. Verify profile loads automatically without user action. Verify profile loads on app mount. Verify profile persists across page reloads.</description>
+      </test>
+      <test ac="AC6">
+        <title>Test Error Handling</title>
+        <description>Manually corrupt localStorage data (set invalid JSON). Reload page. Verify app handles JSON parse error gracefully. Verify error message is shown if profile corrupted. Verify app doesn't crash. Test localStorage quota exceeded scenario (if possible).</description>
+      </test>
+      <test ac="AC7">
+        <title>Test Profile Existence Check Utility</title>
+        <description>Test `profileExists()` function with existing profile (should return true). Test with no profile (should return false). Test with corrupted data (should return false). Verify checks localStorage key: `chessAscensionProfile`.</description>
+      </test>
+      <test ac="All">
+        <title>Test Profile Persistence</title>
+        <description>Create profile. Reload page multiple times. Verify profile loads each time. Close browser and reopen. Verify profile persists across browser sessions. Verify profile data matches localStorage structure (PRD section 8). Verify store state matches localStorage data.</description>
+      </test>
+      <test ac="All">
+        <title>Test Duplicate Profile Load Prevention</title>
+        <description>Load profile on app mount. Verify profile is not loaded multiple times. Check store state before loading to prevent duplicate loads. Verify profile loads only once per app initialization.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

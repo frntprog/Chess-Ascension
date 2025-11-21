@@ -1,0 +1,181 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Zustand State Management Setup</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-4-zustand-state-management-setup.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer</asA>
+    <iWant>I want Zustand installed and store structure created</iWant>
+    <soThat>So that session state and profile state can be managed effectively</soThat>
+    <tasks>
+      <task id="1" ac="1">Install Zustand Package
+        - Run `npm install zustand` command
+        - Verify Zustand is added to `package.json` dependencies
+        - Verify Zustand version is compatible with React 18+ and TypeScript 5+
+        - Verify installation completes without errors
+      </task>
+      <task id="2" ac="2">Create Session Store File
+        - Create `/src/stores/sessionStore.ts` file
+        - Define TypeScript interface `SessionState` with all required fields
+        - Create placeholder Zustand store slice (not yet implemented)
+        - Export store slice (placeholder implementation)
+        - Verify file structure matches Architecture section 3 (Session Layer)
+      </task>
+      <task id="3" ac="3">Create Profile Store File
+        - Create `/src/stores/profileStore.ts` file
+        - Define TypeScript interface `ProfileState` with all required fields
+        - Create placeholder Zustand store slice (not yet implemented)
+        - Export store slice (placeholder implementation)
+        - Verify file structure matches Architecture section 3 (Profile Layer)
+      </task>
+      <task id="4" ac="4">Verify Store Import and Type Safety
+        - Import sessionStore in a test file or component
+        - Import profileStore in a test file or component
+        - Verify imports work without TypeScript errors
+        - Verify TypeScript compilation passes: `npm run build`
+        - Verify store types are properly exported and can be used
+      </task>
+      <task id="5" ac="2,3,4">Verify Store Structure Alignment
+        - Verify sessionStore structure matches Architecture section 3 (Session Layer) specifications
+        - Verify profileStore structure matches Architecture section 3 (Profile Layer) specifications
+        - Verify store types align with Profile data model from PRD section 8
+        - Verify store structure supports future implementation in Epic 2+ stories
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">Zustand Installation
+      Given Zustand is installed
+      When the state management setup is complete
+      Then Zustand is installed: `npm install zustand`
+      And Zustand package is listed in `package.json` dependencies
+    </criterion>
+    <criterion id="AC2">Session Store Structure Creation
+      And `/src/stores/sessionStore.ts` created with placeholder structure matching Architecture section 3 (Session Layer)
+      And TypeScript types defined for session store state:
+      - `boardState: string` (FEN string, not implemented in Epic 1)
+      - `sessionScore: number` (session-only score, not implemented in Epic 1)
+      - `sessionAbilities: any[]` (session abilities, not implemented in Epic 1)
+      - `rpgFlags: { doubleMoveActive: boolean; hintModeActive: boolean; shieldActive: boolean; shieldedPieceSquare: string | null }` (RPG mode flags, not implemented in Epic 1)
+      - `difficulty: 'beginner' | 'intermediate' | 'advanced' | null` (AI difficulty level)
+      - `sessionLifecycle: 'idle' | 'active' | 'ended'` (match lifecycle state)
+    </criterion>
+    <criterion id="AC3">Profile Store Structure Creation
+      And `/src/stores/profileStore.ts` created with placeholder structure matching Architecture section 3 (Profile Layer)
+      And TypeScript types defined for profile store state:
+      - `nickname: string` (user identifier)
+      - `xp: number` (accumulated XP)
+      - `level: number` (current level)
+      - `rank: string` (current rank)
+      - `unlockedSkins: string[]` (array of unlocked skin names)
+      - `selectedSkin: string` (currently active skin)
+      - `unlockedAbilities: string[]` (array of unlocked ability names)
+      - `bestScore: number` (highest score achieved)
+      - `stats: { gamesPlayed: number; wins: number; losses: number }` (match statistics)
+    </criterion>
+    <criterion id="AC4">Store Export and Type Safety
+      And store slices exported but not yet implemented (implementation deferred to later stories)
+      And stores can be imported without errors
+      And TypeScript types compile correctly with no errors
+      And store structure matches Architecture section 3 specifications
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Section 8: Data Model (localStorage)">
+        Profile data structure: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses. Storage key: `chessAscensionProfile`. JSON serialization in localStorage.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Section 3: Component Responsibilities - Session Layer and Profile Layer">
+        Session Layer (Zustand) manages: boardState, sessionScore, sessionAbilities, rpgFlags, difficulty, sessionLifecycle. Never writes to persistence directly. Profile Layer (Zustand + localStorage) manages: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats. Reads from localStorage on app load, writes updates after match end.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Section 8: File & Folder Structure">
+        Store files location: `/src/stores/sessionStore.ts` and `/src/stores/profileStore.ts`. File structure supports future store implementation in Epic 2+ and Epic 3+.
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Epic 1 Technical Specification" section="Data Models and Contracts - Session Store Structure and Profile Store Structure">
+        TypeScript interfaces for SessionState and ProfileState with all required fields. Store structure is placeholder-only in Epic 1; implementation deferred to Epic 2+ (profile store) and Epic 3+ (session store).
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Epic 1 Technical Specification" section="Story 1.4: Zustand State Management Sequence">
+        Installation sequence: Install Zustand, create store files with placeholder structure, export store slices, verify store structure. Store implementations will be added in Epic 2+ (profile store) and Epic 3+ (session store).
+      </doc>
+      <doc path="docs/epics.md" title="Epics Document" section="Story 1.4: Zustand State Management Setup">
+        Acceptance criteria and technical notes for Zustand installation and store structure creation. Store structure must support future implementation without refactoring.
+      </doc>
+    </docs>
+    <code>
+      <file path="src/services/profileStorage.ts" kind="service" symbol="Profile interface, saveProfile, loadProfile, clearProfile, profileExists" lines="1-180" reason="Profile storage utility provides localStorage abstraction. Profile store will integrate with this service in Epic 2+. Profile interface matches PRD section 8 data model." />
+      <file path="src/stores" kind="directory" symbol="stores directory" lines="N/A" reason="Directory exists but empty. Story 1.4 will create sessionStore.ts and profileStore.ts files here. Matches Architecture section 8 file structure." />
+      <file path="src/app/routes.ts" kind="route-config" symbol="routes array" lines="1-12" reason="React Router route definitions placeholder. Store structure will be consumed by components in Epic 2+ (profile management) and Epic 3+ (game board)." />
+      <file path="package.json" kind="manifest" symbol="dependencies, devDependencies" lines="1-42" reason="Package manifest shows React 18+, TypeScript 5+, Vite setup. Zustand will be added to dependencies. No existing state management library conflicts." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="typescript" version="^5.5.3" />
+        <package name="vite" version="^5.3.4" />
+        <package name="zustand" version="^4.0.0" reason="To be installed in this story" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-separator" version="^1.1.8" />
+        <package name="@radix-ui/react-slot" version="^1.2.4" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Store structure is placeholder-only in Epic 1; implementation deferred to Epic 2+ (profile store) and Epic 3+ (session store)</constraint>
+    <constraint>Session store manages temporary game state (board, score, abilities, flags) - never writes to persistence directly</constraint>
+    <constraint>Profile store manages persistent user data (XP, level, rank, unlocks) - syncs with localStorage via profileStorage utility (Story 1.2)</constraint>
+    <constraint>Store slices use Zustand's `create` function for store creation</constraint>
+    <constraint>TypeScript interfaces define store state structure (type safety)</constraint>
+    <constraint>Store structure must support future implementation without refactoring</constraint>
+    <constraint>Zustand integrates with React 18+ (hooks-based API)</constraint>
+    <constraint>Profile store will integrate with `profileStorage.ts` service (Story 1.2) in Epic 2+</constraint>
+    <constraint>Session store will integrate with chess.js and Stockfish in Epic 3+</constraint>
+    <constraint>File structure follows Architecture section 8 specification: `/src/stores/sessionStore.ts` and `/src/stores/profileStore.ts`</constraint>
+    <constraint>TypeScript strict mode enabled (use for store type definitions)</constraint>
+    <constraint>Path aliases configured (`@/` imports) - can be used for store imports</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Profile (from profileStorage.ts)" kind="TypeScript interface" signature="interface Profile { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; bestScore: number; wins: number; losses: number; }" path="src/services/profileStorage.ts" />
+    <interface name="SessionState (to be created)" kind="TypeScript interface" signature="interface SessionState { boardState: string; sessionScore: number; sessionAbilities: any[]; rpgFlags: { doubleMoveActive: boolean; hintModeActive: boolean; shieldActive: boolean; shieldedPieceSquare: string | null; }; difficulty: 'beginner' | 'intermediate' | 'advanced' | null; sessionLifecycle: 'idle' | 'active' | 'ended'; }" path="src/stores/sessionStore.ts" />
+    <interface name="ProfileState (to be created)" kind="TypeScript interface" signature="interface ProfileState { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; bestScore: number; stats: { gamesPlayed: number; wins: number; losses: number; }; }" path="src/stores/profileStore.ts" />
+    <interface name="Zustand create function" kind="Zustand API" signature="create&lt;T&gt;((set, get) => T): T" path="zustand package" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing approach for Epic 1. Verify stores can be imported, TypeScript types compile correctly, store structure matches Architecture specifications. TypeScript compilation (`npm run build`) must pass with no errors. No automated unit tests required for Epic 1 (infrastructure-only). Automated tests can be added in Epic 2+ when features are implemented.
+    </standards>
+    <locations>
+      No test files exist yet. Manual testing via TypeScript compilation and import verification. Future test locations: `/src/stores/__tests__/` or co-located test files (deferred to Epic 2+).
+    </locations>
+    <ideas>
+      <test ac="AC1">Verify Zustand package appears in package.json dependencies after installation</test>
+      <test ac="AC2">Verify sessionStore.ts file exists with correct TypeScript interface and placeholder store slice</test>
+      <test ac="AC3">Verify profileStore.ts file exists with correct TypeScript interface and placeholder store slice</test>
+      <test ac="AC4">Import sessionStore and profileStore in a test component, verify no TypeScript errors</test>
+      <test ac="AC4">Run `npm run build` and verify TypeScript compilation passes with no errors</test>
+      <test ac="AC2,AC3">Verify store structure matches Architecture section 3 (Session Layer and Profile Layer) specifications</test>
+      <test ac="AC3">Verify ProfileState interface aligns with Profile data model from PRD section 8</test>
+      <test ac="AC2,AC3,AC4">Verify store structure supports future implementation in Epic 2+ stories (no refactoring needed)</test>
+    </ideas>
+  </tests>
+</story-context>
+

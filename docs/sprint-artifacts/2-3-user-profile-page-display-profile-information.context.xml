@@ -1,0 +1,227 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>User Profile Page - Display Profile Information</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-3-user-profile-page-display-profile-information.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>logged-in user</asA>
+    <iWant>to view my profile information</iWant>
+    <soThat>I can see my progression, stats, and unlocked content</soThat>
+    <tasks>
+      <task id="1" title="Create Profile Page Component">
+        - Create `/src/pages/Profile.tsx` component
+        - Import shadcn/ui components: Card, Badge, Separator
+        - Set up component structure with profile card layout
+        - Implement centered card layout (UX Design Specification section 4.1 - Spacious & Centered)
+        - Add responsive design for desktop (1280px+ minimum)
+      </task>
+      <task id="2" title="Implement Profile Display Fields">
+        - Display user nickname from profile store
+        - Display level badge with "Level {level}" text (shadcn/ui Badge, large and prominent)
+        - Display rank badge showing current rank (Pawn, Knight, Bishop, Rook, Queen)
+        - Implement XP progress display (Current XP / XP needed for next level)
+        - Create stats grid displaying: Games Played, Best Score, Wins, Losses, Win Rate
+        - Display Unlocked Skins section with list of unlocked skin names (badges)
+        - Display Selected Skin indicator showing currently selected skin
+        - Display Unlocked Abilities section with list of unlocked ability names (if any)
+      </task>
+      <task id="3" title="Integrate Profile Store Data">
+        - Import `useProfileStore` from `/src/stores/profileStore.ts`
+        - Access profile data from profile store (nickname, xp, level, rank, stats, unlocks)
+        - Verify profile data is available (profile loads from localStorage on app init - Story 2.2)
+        - Map profile store fields to display components
+        - Handle profile store state updates (reactive to store changes)
+      </task>
+      <task id="4" title="Implement Loading State">
+        - Add loading state check (skeleton loader or spinner)
+        - Show loading indicator while profile data loads
+        - Use shadcn/ui Skeleton component or custom spinner
+        - Hide loading state when profile data is available
+        - Follow UX Design Specification section 7.2 (Loading States)
+      </task>
+      <task id="5" title="Implement Error Handling">
+        - Check if profile load failed (profile store state indicates error)
+        - Display error message if profile load fails
+        - Add retry button to reload profile
+        - Handle case where profile doesn't exist (redirect to create profile or show message)
+        - Use toast notification or inline error message (UX Design Specification section 7.2 - Error States)
+      </task>
+      <task id="6" title="Add Profile Page Route">
+        - Add `/profile` route to `/src/app/routes.ts` (or App.tsx if routes defined there)
+        - Map route to Profile page component
+        - Test navigation to profile page
+        - Verify route is accessible when profile exists
+      </task>
+      <task id="7" title="Styling and Layout">
+        - Apply Classic Chess theme colors (UX Design Specification section 3.1)
+        - Style profile card with proper spacing and padding
+        - Style level badge (large, prominent)
+        - Style rank badge
+        - Style stats grid with proper layout
+        - Style unlocked skins/abilities sections
+        - Ensure typography follows UX Design Specification section 3.2
+        - Test responsive design (desktop 1280px+)
+      </task>
+      <task id="8" title="Testing and Verification">
+        - Test profile page loads with existing profile
+        - Test profile data displays correctly (all fields)
+        - Test loading state displays while profile loads
+        - Test error state displays if profile load fails
+        - Test win rate calculation (wins / (wins + losses) * 100 if gamesPlayed > 0)
+        - Test XP progress display (current XP / XP needed for next level)
+        - Test navigation to profile page from other pages
+        - Test responsive design on desktop (1280px+)
+        - Verify profile data matches localStorage profile structure (PRD section 8)
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1" title="Profile Page Display">
+      Given a user has a profile and navigates to profile page
+      When the profile page loads
+      Then the profile displays:
+      - Profile card component (shadcn/ui Card) with:
+        - User nickname (from localStorage profile)
+        - Level badge (shadcn/ui Badge): Large, prominent, shows "Level {level}"
+        - Rank badge: Shows current rank (Pawn, Knight, Bishop, Rook, Queen)
+        - XP progress bar or display: Current XP / XP needed for next level
+        - Stats grid:
+          - Games Played: `gamesPlayed`
+          - Best Score: `bestScore`
+          - Wins: `wins`
+          - Losses: `losses`
+          - Win Rate: Calculated from wins/losses (if gamesPlayed > 0)
+        - Unlocked Skins section: List of unlocked skin names with badges
+        - Selected Skin indicator: Shows currently selected skin
+        - Unlocked Abilities section: List of unlocked ability names (if any)
+    </criterion>
+    <criterion id="AC2" title="Profile Data Source">
+      And all data is loaded from Zustand profile store (synced from localStorage on app load)
+      And loading state is shown while profile data loads (skeleton or spinner)
+      And error state is handled if profile load fails (show error message, retry button)
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Data Model (localStorage)">
+        Profile data model structure: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses. Storage key: `chessAscensionProfile`.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Profile Layer">
+        Profile Layer architecture using Zustand + localStorage syncing. Profile store structure matches ProfileState interface. Profile loads from localStorage on app initialization.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="File & Folder Structure">
+        Profile page location: `/src/pages/Profile.tsx`. Profile store: `/src/stores/profileStore.ts`. UI components: `/src/components/UI/`. Routes: `/src/app/routes.ts` or App.tsx.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="4.1 - Spacious & Centered">
+        Centered card layout with wide margins, maximum container width 1200px, spacious density with clear section separation.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="6.1 - Component Strategy">
+        Use shadcn/ui components: Card, Badge, Separator. ProfileCard component pattern for displaying profile information with stats grid.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="7.2 - Feedback Patterns">
+        Loading states: Spinner on button or simple loading indicator. Error states: Inline error message with retry option. Toast notifications for success/error feedback.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1 - Color System">
+        Classic Chess theme: Primary #1e293b (Slate 800), Secondary #475569 (Slate 600), Accent #f59e0b (Amber 500), Success #10b981 (Green 500).
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.2 - Typography">
+        Headings: 2rem (H1), 1.5rem (H2), 1.25rem (H3). Body: 1rem. Font weights: Normal 400, Medium 500, Semibold 600, Bold 700.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 2.3: User Profile Page - Display Profile Information">
+        Complete story definition with acceptance criteria, tasks, and technical notes. References architecture patterns, UX design specifications, and previous story learnings.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-2-load-local-profile-flow.md" title="Story 2.2 Implementation" section="Dev Agent Record">
+        Profile loading pattern: Profile loads automatically on app initialization (App.tsx useEffect on mount). Profile store sync pattern: `updateProfile(profile)` action updates all profile fields at once. Profile data is available in store when Profile page component mounts.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/stores/profileStore.ts" kind="store" symbol="useProfileStore" lines="1-111" reason="Zustand profile store providing profile state (nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats). Store is synced from localStorage on app load (Story 2.2). Profile page should use `useProfileStore()` hook to access profile data." />
+      <artifact path="src/services/profileStorage.ts" kind="service" symbol="loadProfile" lines="96-119" reason="Profile loading utility function. Returns Profile object or null. Handles JSON parse errors gracefully. Used by App.tsx for app-level profile loading (Story 2.2). Profile page can rely on profile already being loaded in store." />
+      <artifact path="src/services/profileStorage.ts" kind="service" symbol="Profile" lines="14-26" reason="Profile interface matching PRD section 8 data model. Defines structure: nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses." />
+      <artifact path="src/components/UI/card.tsx" kind="component" symbol="Card, CardHeader, CardTitle, CardContent" lines="1-80" reason="shadcn/ui Card components for profile card layout. Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter available for use." />
+      <artifact path="src/components/UI/badge.tsx" kind="component" symbol="Badge" lines="1-37" reason="shadcn/ui Badge component for level and rank badges. Supports variants: default, secondary, destructive, outline. Can be styled with className for large, prominent display." />
+      <artifact path="src/components/UI/separator.tsx" kind="component" symbol="Separator" lines="1-32" reason="shadcn/ui Separator component for section dividers in profile card. Supports horizontal and vertical orientations." />
+      <artifact path="src/app/routes.ts" kind="route" symbol="routes" lines="1-16" reason="React Router route definitions. Currently has /create-profile route. Profile page route should be added here. Routes are used in App.tsx with BrowserRouter." />
+      <artifact path="src/App.tsx" kind="component" symbol="App" lines="1-82" reason="Main app component with profile loading logic (Story 2.2). Loads profile from localStorage on app mount and syncs to Zustand store. Profile data is available when Profile page mounts. Routes defined here with BrowserRouter." />
+      <artifact path="src/pages/CreateProfile.tsx" kind="component" symbol="CreateProfile" lines="1-271" reason="Example page component showing profile store usage pattern. Uses `useProfileStore()` hook, shadcn/ui components (Card, Input, Label, Button), and toast notifications. Good reference for Profile page implementation patterns." />
+      <artifact path="src/components/TestShadcn.tsx" kind="component" symbol="TestShadcn" lines="1-174" reason="Test component showing conditional UI rendering based on profile state. Displays welcome message with nickname/level/rank when profile exists. Good reference for profile data access and conditional rendering patterns." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-separator" version="^1.1.8" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="typescript" version="^5.5.3" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      Profile page component location: `/src/pages/Profile.tsx` (Architecture section 8 - File & Folder Structure). Profile store: `/src/stores/profileStore.ts`. UI components: `/src/components/UI/`. Routes: `/src/app/routes.ts` or App.tsx.
+    </constraint>
+    <constraint type="data-flow">
+      Profile data source: Zustand profile store (synced from localStorage on app load - Story 2.2). Profile page should NOT load profile again - profile is already available in store when component mounts. Single source of truth: localStorage (profile store syncs from localStorage, not vice versa).
+    </constraint>
+    <constraint type="ui-components">
+      Use shadcn/ui components: Card, Badge, Separator (Story 1.3). ProfileCard component pattern (UX Design Specification section 6.1, Component 4). Layout: Centered card layout (UX Design Specification section 4.1 - Spacious & Centered). Typography per UX Design Specification section 3.2.
+    </constraint>
+    <constraint type="state-management">
+      Profile store access: Use `useProfileStore()` hook throughout component. Profile data: Access from profile store (nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses). Store reactivity: Zustand handles component re-renders when store updates. Profile store sync: Profile already loaded from localStorage on app init (Story 2.2).
+    </constraint>
+    <constraint type="calculations">
+      Win rate: `(wins / (wins + losses)) * 100` if `gamesPlayed > 0`. XP progress: Need to determine XP thresholds per level (implementation in Epic 4). For MVP: Display current XP and note "XP thresholds TBD in Epic 4" or use placeholder.
+    </constraint>
+    <constraint type="error-handling">
+      Profile load failure: Check profile store state for error indicators. No profile: Redirect to create profile page or show message. Retry mechanism: Reload profile from localStorage using profileStorage utility.
+    </constraint>
+    <constraint type="styling">
+      Apply Classic Chess theme colors (UX Design Specification section 3.1). Style profile card with proper spacing and padding. Style level badge (large, prominent). Style rank badge. Style stats grid with proper layout. Ensure typography follows UX Design Specification section 3.2. Test responsive design (desktop 1280px+).
+    </constraint>
+    <constraint type="testing">
+      Test profile page loads with existing profile. Test profile data displays correctly (all fields). Test loading state displays while profile loads. Test error state displays if profile load fails. Test win rate calculation. Test XP progress display. Test navigation to profile page from other pages. Test responsive design on desktop (1280px+). Verify profile data matches localStorage profile structure (PRD section 8).
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="useProfileStore" kind="hook" signature="const { nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, bestScore, stats } = useProfileStore()" path="src/stores/profileStore.ts" />
+    <interface name="ProfileState" kind="interface" signature="interface ProfileState { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; bestScore: number; stats: { gamesPlayed: number; wins: number; losses: number; } }" path="src/stores/profileStore.ts" />
+    <interface name="Card" kind="component" signature="Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter" path="src/components/UI/card.tsx" />
+    <interface name="Badge" kind="component" signature="Badge({ className, variant, ...props }: BadgeProps)" path="src/components/UI/badge.tsx" />
+    <interface name="Separator" kind="component" signature="Separator({ className, orientation, decorative, ...props })" path="src/components/UI/separator.tsx" />
+    <interface name="React Router Route" kind="route" signature="&lt;Route path=&quot;/profile&quot; element={&lt;Profile /&gt;} /&gt;" path="src/app/routes.ts" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should verify profile data displays correctly from Zustand store, loading states show appropriately, error states handle gracefully, and all calculations (win rate, XP progress) work correctly. Test responsive design on desktop (1280px+ minimum). Verify profile data matches localStorage structure from PRD section 8.
+    </standards>
+    <locations>
+      Test files should be placed alongside components: `/src/pages/Profile.test.tsx` or in a `__tests__` directory. Use React Testing Library for component testing. Test profile store integration, UI component rendering, and user interactions.
+    </locations>
+    <ideas>
+      <test id="AC1" idea="Test profile page renders with all required fields: nickname, level badge, rank badge, XP progress, stats grid (gamesPlayed, bestScore, wins, losses, win rate), unlocked skins list, selected skin indicator, unlocked abilities list" />
+      <test id="AC2" idea="Test profile data loads from Zustand store (verify store data is displayed correctly). Test loading state shows skeleton/spinner while profile loads. Test error state displays error message and retry button when profile load fails." />
+      <test id="calculation" idea="Test win rate calculation: (wins / (wins + losses)) * 100 when gamesPlayed > 0. Test XP progress display shows current XP (XP thresholds TBD in Epic 4, use placeholder for now)." />
+      <test id="navigation" idea="Test /profile route is accessible when profile exists. Test navigation to profile page from other pages works correctly." />
+      <test id="responsive" idea="Test responsive design on desktop (1280px+ minimum). Verify centered card layout, proper spacing, and typography scaling." />
+    </ideas>
+  </tests>
+</story-context>
+

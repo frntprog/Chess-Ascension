@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Ascension - Color Theme Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fa;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .theme-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .theme-personality {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .color-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.25rem;
+            text-align: center;
+        }
+
+        .semantic-colors {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .semantic-swatch {
+            height: 60px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .components-showcase {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .component-example {
+            margin-bottom: 1rem;
+        }
+
+        .btn-example {
+            display: inline-block;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-example:hover {
+            opacity: 0.9;
+        }
+
+        .input-example {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border-radius: 8px;
+            border: 1px solid;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-example {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Theme 1: Classic Chess */
+        .theme-1 .primary { background: #1e293b; }
+        .theme-1 .secondary { background: #475569; }
+        .theme-1 .accent { background: #f59e0b; }
+        .theme-1 .neutral { background: #64748b; }
+        
+        .theme-1 .btn-primary { background: #1e293b; color: white; border: none; }
+        .theme-1 .btn-secondary { background: #475569; color: white; border: none; }
+        .theme-1 .input-example { border-color: #cbd5e1; background: white; }
+        .theme-1 .card-example { background: #f8fafc; border: 1px solid #e2e8f0; }
+
+        /* Theme 2: Modern Gaming */
+        .theme-2 .primary { background: #6366f1; }
+        .theme-2 .secondary { background: #8b5cf6; }
+        .theme-2 .accent { background: #06b6d4; }
+        .theme-2 .neutral { background: #64748b; }
+
+        .theme-2 .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none; }
+        .theme-2 .btn-secondary { background: #64748b; color: white; border: none; }
+        .theme-2 .input-example { border-color: #cbd5e1; background: white; }
+        .theme-2 .card-example { background: linear-gradient(135deg, #f8f9ff 0%, #f3f4ff 100%); border: 1px solid #e0e7ff; }
+
+        /* Theme 3: Minimalist */
+        .theme-3 .primary { background: #0f172a; }
+        .theme-3 .secondary { background: #334155; }
+        .theme-3 .accent { background: #3b82f6; }
+        .theme-3 .neutral { background: #94a3b8; }
+
+        .theme-3 .btn-primary { background: #0f172a; color: white; border: none; }
+        .theme-3 .btn-secondary { background: #334155; color: white; border: none; }
+        .theme-3 .input-example { border-color: #e2e8f0; background: white; }
+        .theme-3 .card-example { background: white; border: 1px solid #e2e8f0; }
+
+        /* Theme 4: Warm & Inviting */
+        .theme-4 .primary { background: #7c3aed; }
+        .theme-4 .secondary { background: #a855f7; }
+        .theme-4 .accent { background: #f59e0b; }
+        .theme-4 .neutral { background: #64748b; }
+
+        .theme-4 .btn-primary { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; border: none; }
+        .theme-4 .btn-secondary { background: #64748b; color: white; border: none; }
+        .theme-4 .input-example { border-color: #e9d5ff; background: white; }
+        .theme-4 .card-example { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #e9d5ff; }
+
+        /* Semantic colors for all themes */
+        .theme-1 .success { background: #10b981; }
+        .theme-1 .warning { background: #f59e0b; }
+        .theme-1 .error { background: #ef4444; }
+        .theme-1 .info { background: #3b82f6; }
+
+        .theme-2 .success { background: #10b981; }
+        .theme-2 .warning { background: #f59e0b; }
+        .theme-2 .error { background: #ef4444; }
+        .theme-2 .info { background: #06b6d4; }
+
+        .theme-3 .success { background: #10b981; }
+        .theme-3 .warning { background: #f59e0b; }
+        .theme-3 .error { background: #ef4444; }
+        .theme-3 .info { background: #3b82f6; }
+
+        .theme-4 .success { background: #10b981; }
+        .theme-4 .warning { background: #f59e0b; }
+        .theme-4 .error { background: #ef4444; }
+        .theme-4 .info { background: #8b5cf6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Color Theme Options</h1>
+        <p class="subtitle">Explore 4 complete color theme directions for Chess Ascension. Each theme includes full palettes, semantic colors, and live component examples.</p>
+
+        <!-- Theme 1: Classic Chess -->
+        <div class="theme-card theme-1">
+            <div class="theme-title">1. Classic Chess</div>
+            <div class="theme-personality">Elegant • Sophisticated • Traditional</div>
+            
+            <div class="color-palette">
+                <div>
+                    <div class="color-swatch primary">#1e293b</div>
+                    <div class="color-label">Primary</div>
+                </div>
+                <div>
+                    <div class="color-swatch secondary">#475569</div>
+                    <div class="color-label">Secondary</div>
+                </div>
+                <div>
+                    <div class="color-swatch accent">#f59e0b</div>
+                    <div class="color-label">Accent</div>
+                </div>
+                <div>
+                    <div class="color-swatch neutral">#64748b</div>
+                    <div class="color-label">Neutral</div>
+                </div>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <strong style="font-size: 0.875rem; color: #666;">Semantic Colors:</strong>
+                <div class="semantic-colors">
+                    <div class="semantic-swatch success">Success</div>
+                    <div class="semantic-swatch warning">Warning</div>
+                    <div class="semantic-swatch error">Error</div>
+                    <div class="semantic-swatch info">Info</div>
+                    <div class="semantic-swatch neutral">Neutral</div>
+                </div>
+            </div>
+
+            <div class="components-showcase">
+                <div class="component-example">
+                    <button class="btn-example btn-primary">Play Game</button>
+                    <button class="btn-example btn-secondary">Settings</button>
+                </div>
+                <div class="component-example">
+                    <input type="text" class="input-example" placeholder="Enter your name..." />
+                </div>
+                <div class="card-example">
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Profile Stats</div>
+                    <div style="font-size: 0.875rem; color: #64748b;">Level 5 • Rank: Knight</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 2: Modern Gaming -->
+        <div class="theme-card theme-2">
+            <div class="theme-title">2. Modern Gaming</div>
+            <div class="theme-personality">Contemporary • Vibrant • Relaxed</div>
+            
+            <div class="color-palette">
+                <div>
+                    <div class="color-swatch primary">#6366f1</div>
+                    <div class="color-label">Primary</div>
+                </div>
+                <div>
+                    <div class="color-swatch secondary">#8b5cf6</div>
+                    <div class="color-label">Secondary</div>
+                </div>
+                <div>
+                    <div class="color-swatch accent">#06b6d4</div>
+                    <div class="color-label">Accent</div>
+                </div>
+                <div>
+                    <div class="color-swatch neutral">#64748b</div>
+                    <div class="color-label">Neutral</div>
+                </div>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <strong style="font-size: 0.875rem; color: #666;">Semantic Colors:</strong>
+                <div class="semantic-colors">
+                    <div class="semantic-swatch success">Success</div>
+                    <div class="semantic-swatch warning">Warning</div>
+                    <div class="semantic-swatch error">Error</div>
+                    <div class="semantic-swatch info">Info</div>
+                    <div class="semantic-swatch neutral">Neutral</div>
+                </div>
+            </div>
+
+            <div class="components-showcase">
+                <div class="component-example">
+                    <button class="btn-example btn-primary">Play Game</button>
+                    <button class="btn-example btn-secondary">Settings</button>
+                </div>
+                <div class="component-example">
+                    <input type="text" class="input-example" placeholder="Enter your name..." />
+                </div>
+                <div class="card-example">
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Profile Stats</div>
+                    <div style="font-size: 0.875rem; color: #64748b;">Level 5 • Rank: Knight</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 3: Minimalist -->
+        <div class="theme-card theme-3">
+            <div class="theme-title">3. Minimalist</div>
+            <div class="theme-personality">Clean • Spacious • Modern</div>
+            
+            <div class="color-palette">
+                <div>
+                    <div class="color-swatch primary">#0f172a</div>
+                    <div class="color-label">Primary</div>
+                </div>
+                <div>
+                    <div class="color-swatch secondary">#334155</div>
+                    <div class="color-label">Secondary</div>
+                </div>
+                <div>
+                    <div class="color-swatch accent">#3b82f6</div>
+                    <div class="color-label">Accent</div>
+                </div>
+                <div>
+                    <div class="color-swatch neutral">#94a3b8</div>
+                    <div class="color-label">Neutral</div>
+                </div>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <strong style="font-size: 0.875rem; color: #666;">Semantic Colors:</strong>
+                <div class="semantic-colors">
+                    <div class="semantic-swatch success">Success</div>
+                    <div class="semantic-swatch warning">Warning</div>
+                    <div class="semantic-swatch error">Error</div>
+                    <div class="semantic-swatch info">Info</div>
+                    <div class="semantic-swatch neutral">Neutral</div>
+                </div>
+            </div>
+
+            <div class="components-showcase">
+                <div class="component-example">
+                    <button class="btn-example btn-primary">Play Game</button>
+                    <button class="btn-example btn-secondary">Settings</button>
+                </div>
+                <div class="component-example">
+                    <input type="text" class="input-example" placeholder="Enter your name..." />
+                </div>
+                <div class="card-example">
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Profile Stats</div>
+                    <div style="font-size: 0.875rem; color: #64748b;">Level 5 • Rank: Knight</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 4: Warm & Inviting -->
+        <div class="theme-card theme-4">
+            <div class="theme-title">4. Warm & Inviting</div>
+            <div class="theme-personality">Friendly • Approachable • Relaxed</div>
+            
+            <div class="color-palette">
+                <div>
+                    <div class="color-swatch primary">#7c3aed</div>
+                    <div class="color-label">Primary</div>
+                </div>
+                <div>
+                    <div class="color-swatch secondary">#a855f7</div>
+                    <div class="color-label">Secondary</div>
+                </div>
+                <div>
+                    <div class="color-swatch accent">#f59e0b</div>
+                    <div class="color-label">Accent</div>
+                </div>
+                <div>
+                    <div class="color-swatch neutral">#64748b</div>
+                    <div class="color-label">Neutral</div>
+                </div>
+            </div>
+
+            <div style="margin: 1rem 0;">
+                <strong style="font-size: 0.875rem; color: #666;">Semantic Colors:</strong>
+                <div class="semantic-colors">
+                    <div class="semantic-swatch success">Success</div>
+                    <div class="semantic-swatch warning">Warning</div>
+                    <div class="semantic-swatch error">Error</div>
+                    <div class="semantic-swatch info">Info</div>
+                    <div class="semantic-swatch neutral">Neutral</div>
+                </div>
+            </div>
+
+            <div class="components-showcase">
+                <div class="component-example">
+                    <button class="btn-example btn-primary">Play Game</button>
+                    <button class="btn-example btn-secondary">Settings</button>
+                </div>
+                <div class="component-example">
+                    <input type="text" class="input-example" placeholder="Enter your name..." />
+                </div>
+                <div class="card-example">
+                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Profile Stats</div>
+                    <div style="font-size: 0.875rem; color: #64748b;">Level 5 • Rank: Knight</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; margin-top: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Theme Comparison</h2>
+            <p style="color: #666; margin-bottom: 1rem;">
+                <strong>Theme 1 (Classic Chess):</strong> Traditional chess aesthetic - elegant dark colors with gold accent. Perfect for chess purists.<br><br>
+                <strong>Theme 2 (Modern Gaming):</strong> Contemporary gaming feel with subtle gradients. Vibrant but not overwhelming, relaxed vibe.<br><br>
+                <strong>Theme 3 (Minimalist):</strong> Ultra-clean, spacious design. Maximum focus on the game itself. Minimal visual noise.<br><br>
+                <strong>Theme 4 (Warm & Inviting):</strong> Friendly purple tones with warm accents. Approachable, welcoming, perfect for relaxed play.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+

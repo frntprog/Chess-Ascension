@@ -1,0 +1,165 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3</storyId>
+    <title>Difficulty Selection Component</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-01-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-3-difficulty-selection-component.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user,</asA>
+    <iWant>I want to select the AI difficulty level,</iWant>
+    <soThat>So that I can play at an appropriate challenge level.</soThat>
+    <tasks>
+      <task id="1" ac="1">Create Difficulty Selection Page Component</task>
+      <task id="2" ac="1">Implement Difficulty Cards</task>
+      <task id="3" ac="2">Implement Mode Detection from Query String</task>
+      <task id="4" ac="2">Implement Difficulty Selection Logic</task>
+      <task id="5" ac="1">Implement Back Button</task>
+      <task id="6" ac="1">Styling and Layout</task>
+      <task id="7" ac="All">Testing and Verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>Given a user is on difficulty selection page</given>
+      <when>When the page loads</when>
+      <then>
+        <item>Centered card with difficulty options: Beginner, Intermediate, Advanced</item>
+        <item>Each difficulty card shows: Difficulty name and level indicator, Brief description (e.g., "Beginner - Great for learning"), "Select" button or clickable card</item>
+        <item>Selected difficulty is highlighted</item>
+        <item>"Back" button to return to mode selection</item>
+      </then>
+    </criterion>
+    <criterion id="AC2">
+      <given>And when user selects a difficulty:</given>
+      <then>
+        <item>Difficulty is stored in Zustand session store</item>
+        <item>Navigate to game board page with selected mode and difficulty</item>
+      </then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="5.1, 5.2">
+        <snippet>Difficulty selection dependent on user level. Classic Mode flow includes difficulty selection step. Features section describes difficulty selection as part of core gameplay flow.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="System Architecture" section="3, 8">
+        <snippet>Routing Layer uses React Router for client-side routing. Session Layer (Zustand) manages difficulty state. File structure specifies pages in /src/pages directory. Session store structure includes difficulty field: 'beginner' | 'intermediate' | 'advanced' | null.</snippet>
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.3">
+        <snippet>Story 3.3 defines difficulty selection component requirements. Technical notes specify DifficultySelection.tsx page component, React Router navigation, session store integration, and UX Design Specification references for DifficultySelector component pattern.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="3.1, 4.1, 6.1, 7.1, 5.1">
+        <snippet>Classic Chess theme colors: Primary #1e293b, Secondary #475569, Accent #f59e0b. Spacious & Centered layout approach with max-width 1200px container. DifficultySelector component (Component 5) uses card-based selection with hover/selected states. Journey 1, step 4 describes difficulty selection flow. Button hierarchy: Primary for main actions, Secondary for supporting actions.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/pages/ModeSelection.tsx" kind="component" symbol="ModeSelection" lines="1-146" reason="Reference implementation for card-based selection pattern, navigation logic, session store integration, and query string handling. Shows pattern for storing mode in session store and navigating with query parameters.">
+        <interface>React component using useNavigate, useSearchParams, useState, Card, Button components. Uses session store setMode action. Navigation pattern: navigate("/difficulty-selection?mode=classic")</interface>
+      </artifact>
+      <artifact path="src/stores/sessionStore.ts" kind="store" symbol="SessionState, useSessionStore" lines="1-73" reason="Session store defines difficulty field but missing setDifficulty action. Shows store structure and pattern for adding difficulty state management.">
+        <interface>Zustand store with difficulty: 'beginner' | 'intermediate' | 'advanced' | null. Has setMode action pattern to follow for setDifficulty implementation.</interface>
+      </artifact>
+      <artifact path="src/App.tsx" kind="routing" symbol="App, Routes" lines="1-90" reason="Shows React Router route definitions. Need to add /difficulty-selection route. Current routes include /mode-selection, /play, /create-profile, /profile.">
+        <interface>BrowserRouter with Routes component. Route definitions use element prop with component. Pattern: &lt;Route path="/difficulty-selection" element={&lt;DifficultySelection /&gt;} /&gt;</interface>
+      </artifact>
+      <artifact path="src/components/UI/card.tsx" kind="component" symbol="Card, CardHeader, CardTitle, CardDescription, CardContent" lines="1-80" reason="shadcn/ui Card component used for difficulty cards. Provides CardHeader, CardTitle, CardDescription, CardContent subcomponents for structured card layout.">
+        <interface>React forwardRef components with className prop. Card accepts onClick handler. Styling via Tailwind classes. CardHeader, CardTitle, CardDescription, CardContent for structured content.</interface>
+      </artifact>
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" lines="1-57" reason="shadcn/ui Button component for Select buttons and Back button. Provides variant prop (default, secondary, destructive) and size prop. Styled with Classic Chess theme colors.">
+        <interface>Button component with variant and size props. Variants: default, secondary, destructive, outline, ghost, link. Accepts onClick handler. Uses Radix UI Slot for composition.</interface>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="lucide-react" version="^0.554.0" />
+        <package name="tailwindcss" version="^3.4.18" />
+        <package name="typescript" version="^5.5.3" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">
+      <rule>Difficulty selection page component: /src/pages/DifficultySelection.tsx (Architecture section 8 - File & Folder Structure)</rule>
+      <rule>Navigation: React Router (per Architecture section 3 - Routing Layer)</rule>
+      <rule>Route definitions in /src/app/routes.ts or App.tsx (Architecture section 8)</rule>
+      <rule>Use React Router's useNavigate hook for programmatic navigation</rule>
+      <rule>Use useSearchParams hook to read mode from query string (?mode=classic or ?mode=rpg)</rule>
+      <rule>Route parameter or query string: Use ?mode=classic&difficulty=beginner to pass mode and difficulty to game board page</rule>
+    </constraint>
+    <constraint type="state-management">
+      <rule>Difficulty selection must be stored in Zustand session store</rule>
+      <rule>Session store: /src/stores/sessionStore.ts (Architecture section 3 - Session Layer)</rule>
+      <rule>Store difficulty as: difficulty: 'beginner' | 'intermediate' | 'advanced' in session store</rule>
+      <rule>Use setDifficulty action to update session store (needs to be added to sessionStore.ts)</rule>
+      <rule>Difficulty mapping to Stockfish depth will be implemented in Story 3.6 (Stockfish AI Integration)</rule>
+      <rule>Mode from query string can optionally be stored in session store for consistency (already implemented in Story 3.2)</rule>
+    </constraint>
+    <constraint type="ui-components">
+      <rule>Use shadcn/ui Card and Button components (Story 1.3)</rule>
+      <rule>Styling: Classic Chess theme colors (UX Design Specification section 3.1)</rule>
+      <rule>Layout: Spacious & Centered approach (UX Design Specification section 4.1)</rule>
+      <rule>Typography: Follow UX Design Specification section 3.2</rule>
+      <rule>Spacing: 8px system (UX Design Specification section 3.3)</rule>
+      <rule>Component pattern: DifficultySelector component pattern (UX Design Specification section 6.1, Component 5)</rule>
+    </constraint>
+    <constraint type="layout">
+      <rule>Centered content with wide margins (spacious layout)</rule>
+      <rule>Three difficulty cards displayed in grid (responsive)</rule>
+      <rule>Card-based selection with hover/selected states</rule>
+      <rule>"Back" button positioned appropriately (top-left or below cards)</rule>
+      <rule>Responsive design for desktop (1280px+ minimum)</rule>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="React Router Navigation" kind="function" signature="useNavigate(): NavigateFunction" path="src/pages/DifficultySelection.tsx">
+      <description>Hook for programmatic navigation. Returns navigate function: navigate(path: string, options?: NavigateOptions)</description>
+    </interface>
+    <interface name="React Router Query Params" kind="function" signature="useSearchParams(): [URLSearchParams, SetURLSearchParams]" path="src/pages/DifficultySelection.tsx">
+      <description>Hook for reading URL query parameters. Returns tuple: [searchParams, setSearchParams]. Use searchParams.get('mode') to read mode parameter.</description>
+    </interface>
+    <interface name="Session Store Hook" kind="function" signature="useSessionStore(): SessionState" path="src/stores/sessionStore.ts">
+      <description>Zustand hook to access session store. Returns SessionState with difficulty field. Need to add setDifficulty action to store.</description>
+    </interface>
+    <interface name="Card Component" kind="component" signature="Card, CardHeader, CardTitle, CardDescription, CardContent" path="src/components/UI/card.tsx">
+      <description>shadcn/ui Card component and subcomponents for structured card layout. Card accepts onClick, className props. CardHeader, CardTitle, CardDescription, CardContent for content organization.</description>
+    </interface>
+    <interface name="Button Component" kind="component" signature="Button({ variant, size, onClick, children, ...props })" path="src/components/UI/button.tsx">
+      <description>shadcn/ui Button component with variant (default, secondary, destructive) and size props. Accepts onClick handler. Styled with Classic Chess theme.</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing approach follows manual verification pattern established in previous stories. Test difficulty selection page displays correctly on desktop (1280px+), difficulty cards render with descriptions and buttons, mode detection from query string (classic and rpg), difficulty selection stores in session store, navigation to game board page with correct query parameters, "Back" button navigates to mode selection page, hover states on difficulty cards, selected state styling, Classic Chess theme colors applied correctly, centered layout with proper spacing. No automated test framework specified in project dependencies.
+    </standards>
+    <locations>
+      Manual testing: Browser testing on desktop viewport (1280px+). No test directory structure detected in project.
+    </locations>
+    <ideas>
+      <test ac="AC1">Test difficulty selection page displays correctly on desktop (1280px+)</test>
+      <test ac="AC1">Test difficulty cards render with descriptions and buttons</test>
+      <test ac="AC2">Test mode detection from query string (classic and rpg)</test>
+      <test ac="AC2">Test difficulty selection stores in session store</test>
+      <test ac="AC2">Test navigation to game board page with correct query parameters</test>
+      <test ac="AC1">Test "Back" button navigates to mode selection page</test>
+      <test ac="AC1">Test hover states on difficulty cards</test>
+      <test ac="AC1">Test selected state styling</test>
+      <test ac="AC1">Verify Classic Chess theme colors applied correctly</test>
+      <test ac="AC1">Verify centered layout with proper spacing</test>
+    </ideas>
+  </tests>
+</story-context>
+

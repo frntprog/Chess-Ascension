@@ -1,0 +1,126 @@
+# Workflow Status Template
+
+# This tracks progress through BMM methodology Analysis, Planning, and Solutioning phases.
+# Implementation phase is tracked separately in sprint-status.yaml
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2025-11-21 10:46:03"
+project: "Chess Ascention"
+project_type: "greenfield"
+selected_track: "bmad-method"
+field_type: "greenfield"
+workflow_path: "method-greenfield.yaml"
+workflow_status:
+  phases:
+    - phase: 0
+      name: "Discovery (Optional)"
+      optional: true
+      note: "User-selected during workflow-init"
+      workflows:
+        - id: "brainstorm-project"
+          status: "skipped"
+          optional: true
+          agent: "analyst"
+          command: "brainstorm-project"
+          
+        - id: "research"
+          status: "skipped"
+          optional: true
+          agent: "analyst"
+          command: "research"
+          
+        - id: "product-brief"
+          status: "docs/brief.md"
+          optional: true
+          agent: "analyst"
+          command: "product-brief"
+          note: "Brief document exists"
+    
+    - phase: 1
+      name: "Planning"
+      required: true
+      workflows:
+        - id: "prd"
+          status: "docs/prd.md"
+          required: true
+          agent: "pm"
+          command: "prd"
+          output: "Product Requirements Document with FRs and NFRs"
+          
+        - id: "validate-prd"
+          status: "optional"
+          optional: true
+          agent: "pm"
+          command: "validate-prd"
+          note: "Quality check for PRD completeness"
+          
+        - id: "create-design"
+          status: "docs/ux-design-specification.md"
+          conditional: "if_has_ui"
+          agent: "ux-designer"
+          command: "create-design"
+          note: "Determined after PRD - user/agent decides if needed"
+    
+    - phase: 2
+      name: "Solutioning"
+      required: true
+      workflows:
+        - id: "create-architecture"
+          status: "docs/architecture.md"
+          required: true
+          agent: "architect"
+          command: "create-architecture"
+          output: "System architecture document"
+          note: "Complete system design for greenfield projects"
+          
+        - id: "create-epics-and-stories"
+          status: "required"
+          required: true
+          agent: "pm"
+          command: "create-epics-and-stories"
+          note: "Required: Break down PRD into implementable epics and stories with full context (PRD + UX + Architecture)"
+          
+        - id: "test-design"
+          status: "recommended"
+          recommended: true
+          agent: "tea"
+          command: "test-design"
+          output: "System-level testability review"
+          note: "Testability assessment before gate check - auto-detects system-level mode"
+          
+        - id: "validate-architecture"
+          status: "optional"
+          optional: true
+          agent: "architect"
+          command: "validate-architecture"
+          note: "Quality check for architecture completeness"
+          
+        - id: "implementation-readiness"
+          status: "required"
+          required: true
+          agent: "architect"
+          command: "implementation-readiness"
+          note: "Validates PRD + UX + Architecture + Epics + Testability cohesion before implementation"
+    
+    - phase: 3
+      name: "Implementation"
+      required: true
+      workflows:
+        - id: "sprint-planning"
+          status: "required"
+          required: true
+          agent: "sm"
+          command: "sprint-planning"
+          note: "Creates sprint plan - subsequent work tracked there"
+

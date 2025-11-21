@@ -1,0 +1,133 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>1</storyId>
+    <title>Create Local Profile Flow</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-21T11:07:27Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-1-create-local-profile-flow.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a new user</asA>
+    <iWant>I want to create a local profile with a nickname</iWant>
+    <soThat>So that I can start playing and track my progression</soThat>
+    <tasks>
+      <task id="1" ac="1">Create CreateProfile Page Component</task>
+      <task id="2" ac="2,3,4">Implement Nickname Input Validation</task>
+      <task id="3" ac="5">Implement Profile Creation Logic</task>
+      <task id="4" ac="6">Integrate Profile Store Sync</task>
+      <task id="5" ac="7">Implement Navigation and Redirect</task>
+      <task id="6" ac="8">Implement Success Feedback</task>
+      <task id="7" ac="9">Implement Existing Profile Check</task>
+      <task id="8" ac="1,7">Add Route Configuration</task>
+      <task id="9" ac="All">Testing and Verification</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <ac id="1">Create Profile Form UI - includes nickname input (3-20 chars), Create Profile button, optional Load Profile link, loading state, centered modal/page layout</ac>
+    <ac id="2">Nickname Validation - Too Short: Error message, red border, blocked submission</ac>
+    <ac id="3">Nickname Validation - Too Long: Error message, red border, blocked submission</ac>
+    <ac id="4">Nickname Validation - Invalid Characters: Error message for non-alphanumeric/spaces, blocked submission</ac>
+    <ac id="5">Valid Profile Creation: Save to localStorage using saveProfile(), initial data (nickname, xp:0, level:1, rank:"Pawn", gamesPlayed:0, bestScore:0, wins:0, losses:0, unlockedSkins:["Classic"], selectedSkin:"Classic", unlockedAbilities:[])</ac>
+    <ac id="6">Profile Store Sync: Update Zustand profile store with all profile fields after creation</ac>
+    <ac id="7">Post-Creation Redirect: Navigate to mode selection or profile page using React Router</ac>
+    <ac id="8">Success Feedback: Toast notification "Profile created successfully!" using shadcn/ui toast pattern</ac>
+    <ac id="9">Existing Profile Check: Check localStorage, show warning if exists, allow load or create new</ac>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="User Flows, Data Model (localStorage)" snippet="Profile creation flow: User creates/loads local profile with nickname. Profile stored in localStorage with key 'chessAscensionProfile'. Profile data includes nickname, xp, level, rank, unlockedSkins, selectedSkin, unlockedAbilities, gamesPlayed, bestScore, wins, losses." />
+      <doc path="docs/architecture.md" title="Architecture Specification" section="Profile Layer, Routing Layer, File & Folder Structure" snippet="Profile Layer: Zustand + localStorage syncing. Profile stored in localStorage with key 'chess-ascension-profile'. Profile store structure matches localStorage data model. Routing Layer: React Router for client-side navigation. File structure: /src/pages for page components, /src/app/routes.ts for route definitions." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Design System Foundation, Form Patterns, Feedback Patterns, User Journey Flows" snippet="shadcn/ui components: Input, Label, Button for forms. Form validation: On blur and on submit. Error display: Inline below input with red text. Toast notifications: Top-right corner, auto-dismiss 3-5 seconds. Create profile page: Centered modal or page layout (Journey 1, step 2)." />
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 2: Local Profile Management, Story 2.1" snippet="Story 2.1: Create Local Profile Flow. Acceptance criteria include nickname validation (3-20 chars, alphanumeric + spaces), profile creation in localStorage, profile store sync, redirect after creation, success feedback, existing profile check." />
+      <doc path="docs/sprint-artifacts/tech-spec-epic-1.md" title="Epic 1 Technical Specification" section="APIs and Interfaces, Data Models" snippet="profileStorage Service API: saveProfile(profile), loadProfile(), clearProfile(), profileExists(). Profile data model matches PRD section 8. Storage key: 'chessAscensionProfile'. Error handling for JSON parse errors and localStorage quota exceeded." />
+    </docs>
+    <code>
+      <artifact path="src/services/profileStorage.ts" kind="service" symbol="saveProfile, loadProfile, profileExists" lines="59-180" reason="Profile storage utility functions for saving/loading profile to/from localStorage. saveProfile() saves profile with key 'chessAscensionProfile'. loadProfile() loads and parses profile. profileExists() checks if valid profile exists. Error handling for quota exceeded and corrupted data." />
+      <artifact path="src/stores/profileStore.ts" kind="store" symbol="useProfileStore, ProfileState" lines="1-77" reason="Zustand profile store with ProfileState interface. Placeholder implementation from Story 1.4. Store structure matches localStorage profile data model. Will be updated after profile creation to sync with localStorage." />
+      <artifact path="src/app/routes.ts" kind="config" symbol="routes" lines="1-11" reason="React Router route definitions. Currently placeholder. Need to add route for /create-profile or /onboarding pointing to CreateProfile page component." />
+      <artifact path="src/components/UI/input.tsx" kind="component" symbol="Input" lines="1-22" reason="shadcn/ui Input component for nickname input field. Supports error states via className prop. Accessible, WCAG AA compliant." />
+      <artifact path="src/components/UI/button.tsx" kind="component" symbol="Button" reason="shadcn/ui Button component for Create Profile button. Supports primary, secondary, ghost variants. Loading state via disabled prop." />
+      <artifact path="src/components/UI/label.tsx" kind="component" symbol="Label" reason="shadcn/ui Label component for form labels. Properly associated with inputs for accessibility." />
+      <artifact path="src/components/TestShadcn.tsx" kind="example" symbol="TestShadcn" lines="1-140" reason="Example usage of shadcn/ui components (Input, Label, Button, Card, Dialog) with Classic Chess theme. Shows component import patterns and styling." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^18.3.1" />
+        <package name="react-dom" version="^18.3.1" />
+        <package name="react-router-dom" version="^6.30.2" />
+        <package name="zustand" version="^5.0.8" />
+        <package name="@radix-ui/react-dialog" version="^1.1.15" />
+        <package name="@radix-ui/react-label" version="^2.1.8" />
+        <package name="@radix-ui/react-slot" version="^1.2.4" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="tailwind-merge" version="^3.4.0" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Profile creation uses profileStorage utility from Story 1.2 (/src/services/profileStorage.ts)</constraint>
+    <constraint>Profile data structure must match PRD section 8 (localStorage data model) and Architecture section 6</constraint>
+    <constraint>Profile stored in localStorage with key: 'chessAscensionProfile' (PRD section 8, Architecture section 6)</constraint>
+    <constraint>Client-side validation before profile creation (UX Design Specification section 7.3 - Form Patterns)</constraint>
+    <constraint>Validation rules: 3-20 characters, alphanumeric and spaces only (regex: ^[a-zA-Z0-9 ]+$)</constraint>
+    <constraint>Form patterns follow UX Design Specification section 7.3 (Form Patterns)</constraint>
+    <constraint>Toast notifications use shadcn/ui toast pattern (UX Design Specification section 7.2 - Feedback Patterns)</constraint>
+    <constraint>Layout: Centered modal or page (UX Design Specification section 4.1 - Spacious & Centered)</constraint>
+    <constraint>React Router navigation via useNavigate hook (Architecture section 3 - Routing Layer)</constraint>
+    <constraint>Route definition in /src/app/routes.ts (Architecture section 8)</constraint>
+    <constraint>Profile store sync: Update Zustand profile store after profile creation (Architecture section 3 - Profile Layer)</constraint>
+    <constraint>Store structure from Story 1.4: /src/stores/profileStore.ts with ProfileState interface</constraint>
+    <constraint>Uses shadcn/ui components: Input, Label, Button (UX Design Specification section 6.1)</constraint>
+    <constraint>TypeScript strict mode enabled (use for profile creation component type definitions)</constraint>
+    <constraint>Error handling: Client-side validation errors shown immediately, localStorage errors handled gracefully</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="saveProfile" kind="function signature" signature="saveProfile(profile: Profile): void" path="src/services/profileStorage.ts" />
+    <interface name="loadProfile" kind="function signature" signature="loadProfile(): Profile | null" path="src/services/profileStorage.ts" />
+    <interface name="profileExists" kind="function signature" signature="profileExists(): boolean" path="src/services/profileStorage.ts" />
+    <interface name="Profile" kind="TypeScript interface" signature="interface Profile { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; gamesPlayed: number; bestScore: number; wins: number; losses: number; }" path="src/services/profileStorage.ts" />
+    <interface name="useProfileStore" kind="Zustand hook" signature="useProfileStore(): ProfileState" path="src/stores/profileStore.ts" />
+    <interface name="ProfileState" kind="TypeScript interface" signature="interface ProfileState { nickname: string; xp: number; level: number; rank: string; unlockedSkins: string[]; selectedSkin: string; unlockedAbilities: string[]; bestScore: number; stats: { gamesPlayed: number; wins: number; losses: number; }; }" path="src/stores/profileStore.ts" />
+    <interface name="useNavigate" kind="React Router hook" signature="useNavigate(): NavigateFunction" path="react-router-dom" />
+    <interface name="Input" kind="React component" signature="Input(props: React.ComponentProps&lt;'input'&gt;): JSX.Element" path="src/components/UI/input.tsx" />
+    <interface name="Label" kind="React component" signature="Label(props: React.ComponentProps&lt;'label'&gt;): JSX.Element" path="src/components/UI/label.tsx" />
+    <interface name="Button" kind="React component" signature="Button(props: ButtonProps): JSX.Element" path="src/components/UI/button.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing approach for this story. Test form validation (too short, too long, invalid characters), valid profile creation (verify localStorage data), profile store sync (verify store state matches localStorage), redirect after profile creation, success toast notification, existing profile check and warning, error handling (localStorage quota exceeded), loading state during profile creation, form accessibility (WCAG AA compliant via shadcn/ui). TypeScript compilation serves as compile-time testing. No automated test framework required for MVP.
+    </standards>
+    <locations>
+      Test files location: Not yet established (testing infrastructure deferred to later epics). Manual testing via browser DevTools and localStorage inspection. Component testing can be done via React DevTools.
+    </locations>
+    <ideas>
+      <test ac="1">Verify CreateProfile page component renders with all required elements: nickname input, Create Profile button, optional Load Profile link, loading state UI</test>
+      <test ac="2">Test nickname validation: Enter &lt;3 characters, verify error message "Nickname must be at least 3 characters", red border, form submission blocked</test>
+      <test ac="3">Test nickname validation: Enter &gt;20 characters, verify error message "Nickname must be 20 characters or less", red border, form submission blocked</test>
+      <test ac="4">Test nickname validation: Enter invalid characters (e.g., "User@123"), verify error message "Nickname can only contain letters, numbers, and spaces", red border, form submission blocked</test>
+      <test ac="5">Test valid profile creation: Enter valid nickname, submit form, verify profile saved to localStorage with key 'chessAscensionProfile', verify all initial fields correct (xp:0, level:1, rank:"Pawn", etc.)</test>
+      <test ac="6">Test profile store sync: After profile creation, verify Zustand profile store updated with all profile fields, verify store state matches localStorage profile data</test>
+      <test ac="7">Test redirect: After successful profile creation, verify navigation to mode selection page (/mode-selection) or profile page (/profile) using React Router</test>
+      <test ac="8">Test success feedback: After profile creation, verify toast notification appears with message "Profile created successfully!", verify toast dismisses automatically after 3-5 seconds</test>
+      <test ac="9">Test existing profile check: Create profile, then attempt to create another, verify warning message "Creating new profile will replace existing profile", verify option to load existing profile or create new</test>
+      <test integration="profileStorage">Test profileStorage integration: Verify saveProfile() saves correctly, loadProfile() loads correctly, profileExists() returns correct boolean</test>
+      <test integration="profileStore">Test profileStore integration: Verify store updates after profile creation, verify store accessible via useProfileStore() hook</test>
+      <test integration="routing">Test route configuration: Verify /create-profile route exists in routes.ts, verify route navigates correctly</test>
+      <test error="localStorage">Test localStorage error handling: Simulate quota exceeded error, verify graceful error handling with user-friendly message</test>
+      <test error="validation">Test validation error clearing: Enter invalid nickname, then correct it, verify error message clears and form becomes valid</test>
+      <test accessibility="wcag">Test accessibility: Verify form labels properly associated with inputs, verify keyboard navigation works, verify screen reader announces errors, verify WCAG AA compliance</test>
+      <test ui="loading">Test loading state: Verify button shows spinner during profile creation, verify form is disabled during creation, verify loading state clears after completion</test>
+    </ideas>
+  </tests>
+</story-context>
+
